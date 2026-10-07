@@ -1,0 +1,439 @@
+﻿================================================================================
+          SCHOOL ERP SYSTEM — DATABASE MIGRATION DOCUMENTATION
+          PostgreSQL  ->  MySQL
+          Date       : 2026-10-07
+          Author     : Antigravity (AI Assistant)
+          Environment: WAMP64 / Laravel 12 / MySQL 9.1.0
+================================================================================
+
+TABLE OF CONTENTS
+-----------------
+  1. Overview
+  2. Project Structure
+  3. Motivation for Migration
+  4. Pre-Migration State
+  5. Migration Steps Performed
+       5.1  Update Environment Variables (.env)
+       5.2  Update Environment Example (.env.example)
+       5.3  Set InnoDB Engine (config/database.php)
+       5.4  Fix Default String Length (AppServiceProvider.php)
+       5.5  Fix Spatie Permission Migration
+       5.6  Create MySQL Database
+       5.7  Run Migrations
+  6. Files Changed (Summary)
+  7. Technical Notes & Why Each Fix Was Needed
+  8. Verification
+  9. Rollback Instructions
+ 10. Post-Migration Checklist
+
+
+================================================================================
+1. OVERVIEW
+================================================================================
+
+This document describes the complete process of migrating the School ERP
+system's database backend from PostgreSQL to MySQL. The backend is built
+on Laravel 12 (PHP 8.2+) and runs locally on WAMP64. The frontend is a
+React (Vite) application and was not affected.
+
+All migrations ran successfully against MySQL 9.1.0 running under WAMP64
+after applying the fixes documented below.
+
+
+================================================================================
+2. PROJECT STRUCTURE
+================================================================================
+
+  c:\wamp64\www\erp\
+  +-- backend\                  (Laravel 12 REST API)
+  |   +-- app\
+  |   |   +-- Http\
+  |   |   |   +-- Controllers\Api\V1\
+  |   |   |   +-- Resources\
+  |   |   +-- Models\
+  |   |   +-- Providers\
+  |   |       +-- AppServiceProvider.php   <- MODIFIED
+  |   +-- config\
+  |   |   +-- database.php                 <- MODIFIED
+  |   +-- database\
+  |   |   +-- migrations\                  <- PERMISSION MIGRATION MODIFIED
+  |   +-- .env                             <- MODIFIED
+  |   +-- .env.example                     <- MODIFIED
+  |   +-- composer.json
+  +-- frontend\                 (React + Vite)
+
+
+================================================================================
+3. MOTIVATION FOR MIGRATION
+================================================================================
+
+  * The project is hosted on WAMP64 which ships with MySQL (not PostgreSQL).
+  * Running PostgreSQL as a separate service alongside WAMP adds unnecessary
+    complexity for local development.
+  * MySQL is natively supported by WAMP, making setup simpler for the team.
+  * Laravel 12 supports MySQL out-of-the-box with zero extra packages.
+  * No PostgreSQL-specific column types (jsonb, uuid, tsvector, etc.) were
+    used in any migrations -- making the switch straightforward.
+
+
+================================================================================
+4. PRE-MIGRATION STATE
+================================================================================
+
+  Configuration before migration:
+
+  File: backend/.env
+    DB_CONNECTION=pgsql
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_DATABASE=school_erp
+    DB_USERNAME=postgres
+    DB_PASSWORD=admin
+
+  File: backend/config/database.php
+    'engine' => null,
+
+  File: backend/app/Providers/AppServiceProvider.php
+    public function boot(): void
+    {
+        // (empty)
+    }
+
+
+================================================================================
+5. MIGRATION STEPS PERFORMED
+================================================================================
+
+------------------------------------------------------------------------------
+5.1  UPDATE ENVIRONMENT VARIABLES  --  backend/.env
+------------------------------------------------------------------------------
+
+  BEFORE:
+    DB_CONNECTION=pgsql
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_DATABASE=school_erp
+    DB_USERNAME=postgres
+    DB_PASSWORD=admin
+
+  AFTER:
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=school_erp
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+  Notes:
+    - Port changed from 5432 (PostgreSQL default) to 3306 (MySQL default).
+    - Username changed from 'postgres' to 'root' (WAMP MySQL default).
+    - Password cleared (WAMP MySQL root has no password by default).
+    - DB_DATABASE kept the same: school_erp.
+
+
+------------------------------------------------------------------------------
+5.2  UPDATE ENVIRONMENT EXAMPLE  --  backend/.env.example
+------------------------------------------------------------------------------
+
+  BEFORE:
+    DB_CONNECTION=sqlite
+    # DB_HOST=127.0.0.1
+    # DB_PORT=3306
+    # DB_DATABASE=backend
+    # DB_USERNAME=root
+    # DB_PASSWORD=
+
+  AFTER:
+    DB_CONNECTION=mysql
+    # DB_HOST=127.0.0.1
+    # DB_PORT=3306
+    # DB_DATABASE=school_erp
+    # DB_USERNAME=root
+    # DB_PASSWORD=
+
+  Notes:
+    - Default connection changed from sqlite to mysql so new developers
+      start with the correct driver.
+    - DB_DATABASE hint updated from 'backend' to 'school_erp'.
+
+
+------------------------------------------------------------------------------
+5.3  SET INNODB ENGINE  --  backend/config/database.php
+------------------------------------------------------------------------------
+
+  BEFORE:
+    'mysql' => [
+        ...
+        'engine' => null,       // uses server's default engine
+        ...
+    ],
+
+  AFTER:
+    'mysql' => [
+        ...
+        'engine' => 'InnoDB',   // explicitly force InnoDB
+        ...
+    ],
+
+  Reason:
+    WAMP's MySQL 9.1.0 is configured with:
+      default_storage_engine = MyISAM
+
+    MyISAM only supports index key lengths up to 1000 bytes. InnoDB supports
+    up to 3072 bytes. Using utf8mb4 (4 bytes per character), a 255-char
+    VARCHAR column alone uses 1020 bytes -- exceeding the MyISAM limit.
+
+    Setting 'engine' => 'InnoDB' in Laravel's connection config causes every
+    CREATE TABLE statement to include "ENGINE=InnoDB", overriding the server
+    default.
+
+
+------------------------------------------------------------------------------
+5.4  FIX DEFAULT STRING LENGTH  --  backend/app/Providers/AppServiceProvider.php
+------------------------------------------------------------------------------
+
+  BEFORE:
+    public function boot(): void
+    {
+        //
+    }
+
+  AFTER:
+    use Illuminate\Support\Facades\Schema;
+
+    public function boot(): void
+    {
+        // Fix MySQL utf8mb4 index key length limit
+        Schema::defaultStringLength(191);
+    }
+
+  Reason:
+    Laravel's Schema::defaultStringLength(191) tells the schema builder to
+    generate VARCHAR(191) instead of the default VARCHAR(255) for all
+    $table->string() calls without an explicit length.
+
+    Calculation:
+      191 characters x 4 bytes (utf8mb4) = 764 bytes
+      Safely under InnoDB's limit of 3072 bytes per single column index.
+
+    This ensures that columns used in UNIQUE indexes (e.g., users.email)
+    never exceed the index size limit.
+
+
+------------------------------------------------------------------------------
+5.5  FIX SPATIE PERMISSION MIGRATION
+     backend/database/migrations/2026_10_07_041849_create_permission_tables.php
+------------------------------------------------------------------------------
+
+  The spatie/laravel-permission package migration uses ->string()
+  without explicit length. Since its closures are declared as "static",
+  they do not inherit Schema::defaultStringLength() set in AppServiceProvider.
+  String lengths were added explicitly.
+
+  COLUMNS CHANGED:
+    permissions table:
+      ->string('name')        ->  ->string('name', 191)
+      ->string('guard_name')  ->  ->string('guard_name', 191)
+
+    roles table:
+      ->string('name')        ->  ->string('name', 191)
+      ->string('guard_name')  ->  ->string('guard_name', 191)
+
+    model_has_permissions table:
+      ->string('model_type')  ->  ->string('model_type', 191)
+
+    model_has_roles table:
+      ->string('model_type')  ->  ->string('model_type', 191)
+
+  Why 191?
+    The unique index on permissions is: UNIQUE(name, guard_name)
+    Combined index size = 191x4 + 191x4 = 1528 bytes -- well under 3072.
+
+
+------------------------------------------------------------------------------
+5.6  CREATE MYSQL DATABASE
+------------------------------------------------------------------------------
+
+  Command executed (using WAMP's MySQL binary):
+
+    C:\wamp64\bin\mysql\mysql9.1.0\bin\mysql.exe -u root -e
+      "CREATE DATABASE IF NOT EXISTS school_erp
+       CHARACTER SET utf8mb4
+       COLLATE utf8mb4_unicode_ci;"
+
+  Notes:
+    - CHARACTER SET utf8mb4 supports full Unicode including emoji.
+    - COLLATE utf8mb4_unicode_ci is the standard case-insensitive collation
+      used by Laravel.
+
+
+------------------------------------------------------------------------------
+5.7  RUN MIGRATIONS
+------------------------------------------------------------------------------
+
+  Commands:
+    php artisan config:clear
+    php artisan migrate --force
+
+  Result (all 12 migrations passed):
+    [OK]  0001_01_01_000000_create_users_table
+    [OK]  0001_01_01_000001_create_cache_table
+    [OK]  0001_01_01_000002_create_jobs_table
+    [OK]  2026_10_07_041849_create_permission_tables
+    [OK]  2026_10_07_043614_create_personal_access_tokens_table
+    [OK]  2026_10_07_050001_create_institutes_and_branches_tables
+    [OK]  2026_10_07_050002_create_academic_years_and_terms_tables
+    [OK]  2026_10_07_050003_create_settings_table
+    [OK]  2026_10_07_050004_create_classes_sections_streams_houses_tables
+    [OK]  2026_10_07_050005_create_subjects_tables
+    [OK]  2026_10_07_050006_create_staff_and_departments_tables
+    [OK]  2026_10_07_050007_create_students_and_admissions_tables
+
+
+================================================================================
+6. FILES CHANGED (SUMMARY)
+================================================================================
+
+  #  File                                                       Change
+  -- ---------------------------------------------------------- ----------------------------
+  1  backend/.env                                               DB driver, port, credentials
+  2  backend/.env.example                                       Default driver, DB name hint
+  3  backend/config/database.php                                'engine' => 'InnoDB'
+  4  backend/app/Providers/AppServiceProvider.php               Schema::defaultStringLength(191)
+  5  backend/database/migrations/                               Explicit string(191) lengths
+       2026_10_07_041849_create_permission_tables.php
+
+
+================================================================================
+7. TECHNICAL NOTES & WHY EACH FIX WAS NEEDED
+================================================================================
+
+  Issue 1: SQLSTATE[HY000] [1049] Unknown database 'school_erp'
+  ---------------------------------------------------------------
+  Cause : Database did not exist in MySQL yet.
+  Fix   : Created it manually via MySQL CLI with utf8mb4 charset.
+
+
+  Issue 2: SQLSTATE[42000] Specified key was too long; max key length 1000 bytes
+  -------------------------------------------------------------------------------
+  Cause : WAMP uses MyISAM as default_storage_engine.
+          MyISAM max index key = 1000 bytes.
+          VARCHAR(255) x utf8mb4 = 1020 bytes > 1000 bytes.
+  Fix   : Forced InnoDB engine in config/database.php.
+          InnoDB supports up to 3072 bytes per index key.
+
+
+  Issue 3: Same key-length error on permissions table after InnoDB fix
+  --------------------------------------------------------------------
+  Cause : Spatie permission migration closures are declared "static".
+          Static closures do not inherit Schema::defaultStringLength()
+          set in AppServiceProvider::boot().
+  Fix   : Explicitly passed 191 as the length argument to all string()
+          columns that participate in unique indexes in that migration.
+
+
+  Why utf8mb4 and not utf8?
+  -------------------------
+  MySQL's "utf8" is actually utf8mb3 -- it only supports BMP characters
+  (U+0000 to U+FFFF). "utf8mb4" is true UTF-8 supporting all Unicode
+  code points including emoji (U+10000+).
+  Laravel uses utf8mb4 by default and so do we.
+
+
+  No PostgreSQL-specific SQL found
+  ---------------------------------
+  All migrations use standard Laravel Schema Builder methods:
+    id(), foreignId(), string(), text(), boolean(), date(),
+    decimal(), timestamps(), unique(), etc.
+  These are database-agnostic and work on MySQL without any changes.
+
+
+================================================================================
+8. VERIFICATION
+================================================================================
+
+  After migration, the following was confirmed:
+
+    Command: php artisan db:show
+
+    MySQL         : 9.1.0
+    Connection    : mysql
+    Database      : school_erp
+    Open Conns    : 1
+    Tables        : 13+ (school_erp schema)
+
+  Tables created in school_erp database:
+    academic_years            institutes
+    admission_inquiries       migrations
+    branches                  model_has_permissions
+    cache                     model_has_roles
+    cache_locks               permissions
+    class_subjects            personal_access_tokens
+    classes                   role_has_permissions
+    departments               roles
+    designations              sections
+    failed_jobs               settings
+    houses                    staff
+    job_batches               staff_experiences
+    jobs                      staff_qualifications
+    student_documents         streams
+    student_enrollments       subject_teachers
+    student_guardians         subjects
+    students                  terms
+    users
+
+
+================================================================================
+9. ROLLBACK INSTRUCTIONS
+================================================================================
+
+  If you need to switch back to PostgreSQL, reverse the following:
+
+  STEP 1 -- Restore .env
+    DB_CONNECTION=pgsql
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_DATABASE=school_erp
+    DB_USERNAME=postgres
+    DB_PASSWORD=admin   (or your actual password)
+
+  STEP 2 -- Restore config/database.php
+    'engine' => null,
+
+  STEP 3 -- Restore AppServiceProvider.php
+    Remove Schema::defaultStringLength(191) and the Schema facade import.
+
+  STEP 4 -- Restore permission migration
+    Remove the explicit (191) lengths from string() calls.
+
+  STEP 5 -- Create PostgreSQL database
+    CREATE DATABASE school_erp
+      WITH ENCODING 'UTF8'
+      LC_COLLATE='en_US.UTF-8'
+      LC_CTYPE='en_US.UTF-8';
+
+  STEP 6 -- Run migrations
+    php artisan config:clear
+    php artisan migrate --force
+
+
+================================================================================
+10. POST-MIGRATION CHECKLIST
+================================================================================
+
+  [ ] Verify .env has correct MySQL credentials
+  [ ] Run: php artisan config:clear
+  [ ] Run: php artisan migrate:status   (all should show "Ran")
+  [ ] Run: php artisan db:show          (confirm connection + table count)
+  [ ] Test API endpoints (login, CRUD operations)
+  [ ] Run database seeders if required:
+        php artisan db:seed
+  [ ] Confirm WAMP MySQL service is set to start automatically
+  [ ] Update any deployment scripts or CI/CD pipelines to use MySQL
+  [ ] Inform team members to update their local .env files
+  [ ] Ensure phpMyAdmin (included in WAMP) can access school_erp database
+
+
+================================================================================
+END OF DOCUMENT
+================================================================================

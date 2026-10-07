@@ -1,0 +1,686 @@
+<?php
+
+$swagger = [
+    "openapi" => "3.0.0",
+    "info" => [
+        "title" => "Cloud-Ready School Management ERP API - Phase 1",
+        "description" => "Complete RESTful API specifications for Multi-Campus School Management ERP. Encompasses Institute Management, Multi-Campus Branches, Academic Years & Terms, Spatie Role-Based Access Control (RBAC), Global Settings, Classes, Sections, Streams, Houses, Subjects, Employee & Staff Management, and Student Admissions & Profiles.",
+        "version" => "1.0.0",
+        "contact" => [
+            "name" => "School ERP Support",
+            "email" => "support@schoolerp.com"
+        ]
+    ],
+    "servers" => [
+        [
+            "url" => "http://localhost:8000/api/v1",
+            "description" => "Local Laravel Development API Server"
+        ]
+    ],
+    "tags" => [
+        ["name" => "Authentication", "description" => "User login, session validation, profile and password management"],
+        ["name" => "Dashboard", "description" => "Phase 1 KPI summaries and institutional metrics"],
+        ["name" => "Institutes & Branches", "description" => "Multi-campus institutes, campus profiles and branch configuration"],
+        ["name" => "Academic Years & Sessions", "description" => "Academic calendars, semesters/terms, active session binding, promotion policies"],
+        ["name" => "User & Role Management", "description" => "User accounts, Spatie RBAC, permissions matrix, status toggling"],
+        ["name" => "Settings", "description" => "Global and branch-specific localization, branding, payment and module toggles"],
+        ["name" => "Class & Section Management", "description" => "Grades (Nursery-12), sections, streams (Science/Commerce/Arts), houses"],
+        ["name" => "Subject Management", "description" => "Theory/Practical subjects, credit hours, class curriculum mapping"],
+        ["name" => "Staff & Employee Records", "description" => "Faculty and administrative staff, departments, designations, teacher assignments"],
+        ["name" => "Student Profile & Admission", "description" => "Student master profiles, admission inquiries, guardian details, enrollments"]
+    ],
+    "components" => [
+        "securitySchemes" => [
+            "bearerAuth" => [
+                "type" => "http",
+                "scheme" => "bearer",
+                "bearerFormat" => "JWT",
+                "description" => "Sanctum API Bearer Token"
+            ]
+        ]
+    ],
+    "paths" => [
+        "/auth/login" => [
+            "post" => [
+                "tags" => ["Authentication"],
+                "summary" => "User Login",
+                "description" => "Authenticates email/password and returns a Sanctum bearer token and user role payload.",
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "application/json" => [
+                            "schema" => [
+                                "type" => "object",
+                                "required" => ["email", "password"],
+                                "properties" => [
+                                    "email" => ["type" => "string", "example" => "admin@schoolerp.com"],
+                                    "password" => ["type" => "string", "example" => "password123"]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "200" => ["description" => "Successful authentication with Bearer token"],
+                    "401" => ["description" => "Invalid credentials"]
+                ]
+            ]
+        ],
+        "/auth/me" => [
+            "get" => [
+                "tags" => ["Authentication"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Current User Profile",
+                "description" => "Returns the authenticated user, role list, permissions, and assigned campus.",
+                "responses" => [
+                    "200" => ["description" => "User profile returned successfully"]
+                ]
+            ]
+        ],
+        "/auth/logout" => [
+            "post" => [
+                "tags" => ["Authentication"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Logout User",
+                "description" => "Revokes current access token.",
+                "responses" => [
+                    "200" => ["description" => "Logged out successfully"]
+                ]
+            ]
+        ],
+        "/auth/profile" => [
+            "put" => [
+                "tags" => ["Authentication"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Profile",
+                "description" => "Updates personal info of the authenticated user.",
+                "responses" => [
+                    "200" => ["description" => "Profile updated"]
+                ]
+            ]
+        ],
+        "/auth/change-password" => [
+            "post" => [
+                "tags" => ["Authentication"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Change Password",
+                "responses" => [
+                    "200" => ["description" => "Password changed"]
+                ]
+            ]
+        ],
+        "/dashboard/kpi" => [
+            "get" => [
+                "tags" => ["Dashboard"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Phase 1 Dashboard KPIs",
+                "description" => "Returns total students, faculty, classes, active session, branch counts and recent admissions.",
+                "responses" => [
+                    "200" => ["description" => "KPI metrics returned"]
+                ]
+            ]
+        ],
+        "/institutes" => [
+            "get" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Institutes",
+                "responses" => ["200" => ["description" => "List of institutes"]]
+            ],
+            "post" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Institute",
+                "responses" => ["201" => ["description" => "Institute created"]]
+            ]
+        ],
+        "/institutes/{id}" => [
+            "get" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Institute Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Institute details"]]
+            ],
+            "put" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Institute",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Institute updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Institute",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Institute deleted"]]
+            ]
+        ],
+        "/branches" => [
+            "get" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Branches / Campuses",
+                "responses" => ["200" => ["description" => "List of branches"]]
+            ],
+            "post" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Branch",
+                "responses" => ["201" => ["description" => "Branch created"]]
+            ]
+        ],
+        "/branches/{id}" => [
+            "put" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Branch",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Branch updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Institutes & Branches"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Branch",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Branch deleted"]]
+            ]
+        ],
+        "/academic-years" => [
+            "get" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Academic Years",
+                "responses" => ["200" => ["description" => "List of academic years"]]
+            ],
+            "post" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Academic Year",
+                "responses" => ["201" => ["description" => "Academic year created"]]
+            ]
+        ],
+        "/academic-years/{id}" => [
+            "get" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Academic Year Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Academic year details"]]
+            ],
+            "put" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Academic Year",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Academic year updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Academic Year",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Academic year deleted"]]
+            ]
+        ],
+        "/academic-years/{id}/set-current" => [
+            "post" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Set as Active Session",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Academic year set as current active session"]]
+            ]
+        ],
+        "/academic-years/{id}/terms" => [
+            "post" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Add Term / Semester",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["201" => ["description" => "Term created"]]
+            ]
+        ],
+        "/terms/{termId}" => [
+            "put" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Term",
+                "parameters" => [["name" => "termId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Term updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Term",
+                "parameters" => [["name" => "termId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Term deleted"]]
+            ]
+        ],
+        "/academic-years/{id}/promotion-rules" => [
+            "put" => [
+                "tags" => ["Academic Years & Sessions"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Configure Promotion Rules",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Promotion rules configured"]]
+            ]
+        ],
+        "/users" => [
+            "get" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Users (Paginated & Filterable)",
+                "responses" => ["200" => ["description" => "List of users"]]
+            ],
+            "post" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create User",
+                "responses" => ["201" => ["description" => "User created"]]
+            ]
+        ],
+        "/users/{id}" => [
+            "get" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get User Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "User details"]]
+            ],
+            "put" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update User",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "User updated"]]
+            ],
+            "delete" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete User",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "User deleted"]]
+            ]
+        ],
+        "/users/{id}/toggle-status" => [
+            "patch" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Toggle User Active/Inactive Status",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "User status toggled"]]
+            ]
+        ],
+        "/roles" => [
+            "get" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Roles with Permissions Count",
+                "responses" => ["200" => ["description" => "List of roles"]]
+            ],
+            "post" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Custom Role",
+                "responses" => ["201" => ["description" => "Role created"]]
+            ]
+        ],
+        "/roles/{id}" => [
+            "get" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Role Details & Assigned Permissions",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Role details"]]
+            ],
+            "put" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Role & Sync Permissions",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Role updated"]]
+            ],
+            "delete" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Role",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Role deleted"]]
+            ]
+        ],
+        "/permissions" => [
+            "get" => [
+                "tags" => ["User & Role Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List System Permissions Grouped by Module",
+                "responses" => ["200" => ["description" => "Grouped permissions"]]
+            ]
+        ],
+        "/settings" => [
+            "get" => [
+                "tags" => ["Settings"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get System Settings",
+                "responses" => ["200" => ["description" => "Settings dictionary & list"]]
+            ]
+        ],
+        "/settings/batch" => [
+            "post" => [
+                "tags" => ["Settings"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Batch Update Settings",
+                "responses" => ["200" => ["description" => "Settings updated"]]
+            ]
+        ],
+        "/classes" => [
+            "get" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Classes with Sections",
+                "responses" => ["200" => ["description" => "List of classes"]]
+            ],
+            "post" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Class / Grade",
+                "responses" => ["201" => ["description" => "Class created"]]
+            ]
+        ],
+        "/classes/{id}" => [
+            "get" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Class Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Class details"]]
+            ],
+            "put" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Class",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Class updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Class",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Class deleted"]]
+            ]
+        ],
+        "/classes/{classId}/sections" => [
+            "post" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Add Section to Class",
+                "parameters" => [["name" => "classId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["201" => ["description" => "Section created"]]
+            ]
+        ],
+        "/sections/{sectionId}" => [
+            "put" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Section",
+                "parameters" => [["name" => "sectionId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Section updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Section",
+                "parameters" => [["name" => "sectionId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Section deleted"]]
+            ]
+        ],
+        "/streams" => [
+            "get" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Streams (Science, Commerce, Arts)",
+                "responses" => ["200" => ["description" => "List of streams"]]
+            ],
+            "post" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Stream",
+                "responses" => ["201" => ["description" => "Stream created"]]
+            ]
+        ],
+        "/houses" => [
+            "get" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Houses / Groups",
+                "responses" => ["200" => ["description" => "List of houses"]]
+            ],
+            "post" => [
+                "tags" => ["Class & Section Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create House",
+                "responses" => ["201" => ["description" => "House created"]]
+            ]
+        ],
+        "/subjects" => [
+            "get" => [
+                "tags" => ["Subject Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Subjects",
+                "responses" => ["200" => ["description" => "List of subjects"]]
+            ],
+            "post" => [
+                "tags" => ["Subject Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Subject",
+                "responses" => ["201" => ["description" => "Subject created"]]
+            ]
+        ],
+        "/subjects/{id}" => [
+            "get" => [
+                "tags" => ["Subject Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Subject Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Subject details"]]
+            ],
+            "put" => [
+                "tags" => ["Subject Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Subject",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Subject updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Subject Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Subject",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Subject deleted"]]
+            ]
+        ],
+        "/classes/{classId}/assign-subject" => [
+            "post" => [
+                "tags" => ["Subject Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Assign Subject to Class",
+                "parameters" => [["name" => "classId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Subject mapped to class"]]
+            ]
+        ],
+        "/classes/{classId}/subjects/{subjectId}" => [
+            "delete" => [
+                "tags" => ["Subject Management"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Remove Subject from Class",
+                "parameters" => [
+                    ["name" => "classId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]],
+                    ["name" => "subjectId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]
+                ],
+                "responses" => ["200" => ["description" => "Subject removed"]]
+            ]
+        ],
+        "/staff" => [
+            "get" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Staff / Employees",
+                "responses" => ["200" => ["description" => "Paginated staff"]]
+            ],
+            "post" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Staff Record with Portal Login",
+                "responses" => ["201" => ["description" => "Staff created"]]
+            ]
+        ],
+        "/staff/{id}" => [
+            "get" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Staff Profile Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Staff profile"]]
+            ],
+            "put" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Staff Record",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Staff updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Staff Record",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Staff deleted"]]
+            ]
+        ],
+        "/staff/{staffId}/assign-subject" => [
+            "post" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Assign Teacher to Class, Section and Subject",
+                "parameters" => [["name" => "staffId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Teacher assignment recorded"]]
+            ]
+        ],
+        "/departments" => [
+            "get" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Departments",
+                "responses" => ["200" => ["description" => "List of departments"]]
+            ],
+            "post" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Department",
+                "responses" => ["201" => ["description" => "Department created"]]
+            ]
+        ],
+        "/designations" => [
+            "get" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Designations",
+                "responses" => ["200" => ["description" => "List of designations"]]
+            ],
+            "post" => [
+                "tags" => ["Staff & Employee Records"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Create Designation",
+                "responses" => ["201" => ["description" => "Designation created"]]
+            ]
+        ],
+        "/students" => [
+            "get" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Students (Searchable & Filterable)",
+                "responses" => ["200" => ["description" => "Paginated student list"]]
+            ],
+            "post" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Admit Student (Master Record + Guardian + Enrollment)",
+                "responses" => ["201" => ["description" => "Student admitted"]]
+            ]
+        ],
+        "/students/{id}" => [
+            "get" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Student Profile Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Student profile with guardians and enrollment"]]
+            ],
+            "put" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Student Record",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Student updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Student Record",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Student deleted"]]
+            ]
+        ],
+        "/students/{studentId}/enroll" => [
+            "post" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Enroll Student to Academic Year / Class / Section",
+                "parameters" => [["name" => "studentId", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Enrollment registered"]]
+            ]
+        ],
+        "/admission-inquiries" => [
+            "get" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "List Admission Inquiries Pipeline",
+                "responses" => ["200" => ["description" => "List of inquiries"]]
+            ],
+            "post" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Log New Admission Inquiry",
+                "responses" => ["201" => ["description" => "Inquiry logged"]]
+            ]
+        ],
+        "/admission-inquiries/{id}" => [
+            "get" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Get Inquiry Details",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Inquiry details"]]
+            ],
+            "put" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Update Inquiry Status / Follow-up",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Inquiry updated"]]
+            ],
+            "delete" => [
+                "tags" => ["Student Profile & Admission"],
+                "security" => [["bearerAuth" => []]],
+                "summary" => "Delete Inquiry",
+                "parameters" => [["name" => "id", "in" => "path", "required" => true, "schema" => ["type" => "integer"]]],
+                "responses" => ["200" => ["description" => "Inquiry deleted"]]
+            ]
+        ]
+    ]
+];
+
+file_put_contents(__DIR__ . '/storage/api-docs/api-docs.json', json_encode($swagger, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+echo "Successfully generated OpenAPI specification with " . count($swagger['paths']) . " endpoints!\n";
