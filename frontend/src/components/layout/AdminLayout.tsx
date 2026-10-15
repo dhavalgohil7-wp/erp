@@ -1,8 +1,9 @@
+import React, { ReactNode } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import { useUIStore } from '../../store/useStore'
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   const { sidebarOpen } = useUIStore()
 
   return (

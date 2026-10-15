@@ -1,7 +1,15 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export const useAuthStore = create(
+interface AuthState {
+  user: Record<string, unknown> | null
+  token: string | null
+  isAuthenticated: boolean
+  login: (user: Record<string, unknown>, token: string) => void
+  logout: () => void
+}
+
+export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
@@ -14,7 +22,16 @@ export const useAuthStore = create(
   )
 )
 
-export const useUIStore = create((set) => ({
+interface UIState {
+  sidebarOpen: boolean
+  activePath: string
+  activeSection: string
+  toggleSidebar: () => void
+  setActivePath: (path: string) => void
+  setActiveSection: (section: string) => void
+}
+
+export const useUIStore = create<UIState>((set) => ({
   sidebarOpen: true,
   activePath: 'overview-and-analytics',
   activeSection: '',

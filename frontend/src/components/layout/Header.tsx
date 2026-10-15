@@ -25,14 +25,12 @@ export default function Header() {
           type="button"
           title={sidebarOpen ? "Slide out sidebar" : "Slide in sidebar"}
         >
-          <span className="material-symbols-outlined text-[24px]">
-            {sidebarOpen ? 'menu_open' : 'menu'}
-          </span>
+          <i className={`fa-solid text-[18px] ${sidebarOpen ? 'fa-bars-staggered' : 'fa-bars'}`}></i>
         </button>
 
         {/* Search */}
         <div className="relative w-full">
-          <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[20px]">search</span>
+          <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-on-surface-variant text-[15px]"></i>
           <input
             className="w-full bg-surface-container-low pl-10 pr-16 py-2 rounded-lg text-[14px] text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/30 transition-all"
             placeholder="Search students, faculty, vouchers, modules..."
@@ -48,9 +46,9 @@ export default function Header() {
       <div className="flex items-center gap-space-sm">
         {/* Academic Term */}
         <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-surface-container-low hover:bg-surface-container rounded-lg text-on-surface border border-outline-variant/20 cursor-pointer transition-colors">
-          <span className="material-symbols-outlined text-primary text-[20px]">school</span>
+          <i className="fa-solid fa-graduation-cap text-primary text-[15px]"></i>
           <span className="text-[13.5px] font-semibold">2024-2025 Term 2</span>
-          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">arrow_drop_down</span>
+          <i className="fa-solid fa-caret-down text-on-surface-variant text-[13px]"></i>
         </div>
 
         {/* Quick Action */}
@@ -58,7 +56,7 @@ export default function Header() {
           className="flex items-center gap-1.5 px-3.5 py-2 bg-primary text-on-primary rounded-lg text-[13.5px] font-semibold hover:opacity-90 transition-all shadow-sm shadow-primary/25 cursor-pointer"
           type="button"
         >
-          <span className="material-symbols-outlined text-[20px]">add</span>
+          <i className="fa-solid fa-plus text-[14px]"></i>
           <span className="hidden sm:inline">Quick Action</span>
         </button>
 
@@ -68,7 +66,7 @@ export default function Header() {
           type="button"
           title="Chat"
         >
-          <span className="material-symbols-outlined text-[22px]">chat</span>
+          <i className="fa-solid fa-comments text-[17px]"></i>
         </button>
 
         {/* Notifications */}
@@ -77,7 +75,7 @@ export default function Header() {
           type="button"
           title="Notifications"
         >
-          <span className="material-symbols-outlined text-[22px]">notifications</span>
+          <i className="fa-solid fa-bell text-[17px]"></i>
           <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-error rounded-full ring-2 ring-surface"></span>
         </button>
 
@@ -88,7 +86,7 @@ export default function Header() {
           onClick={toggleDark}
           title="Toggle Theme"
         >
-          <span className="material-symbols-outlined text-[22px]">{isDark ? 'dark_mode' : 'light_mode'}</span>
+          <i className={`fa-solid text-[17px] ${isDark ? 'fa-moon' : 'fa-sun'}`}></i>
         </button>
 
         <div className="h-6 w-px bg-outline-variant/50 mx-1"></div>
@@ -102,7 +100,7 @@ export default function Header() {
             <span className="text-[14px] font-semibold text-on-surface leading-tight">Dr. Sarah Jenkins</span>
             <span className="text-[12px] font-medium text-secondary leading-tight mt-0.5">Super Admin • Principal</span>
           </div>
-          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">expand_more</span>
+          <i className="fa-solid fa-chevron-down text-on-surface-variant text-[12px]"></i>
         </div>
       </div>
     </header>

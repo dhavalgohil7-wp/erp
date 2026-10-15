@@ -18,7 +18,7 @@ function AdmissionModal({ onClose }) {
         <div className="flex items-center justify-between p-space-md border-b border-surface-container sticky top-0 bg-surface-container-lowest">
           <h2 className="text-headline-md text-on-surface">New Student Admission</h2>
           <button onClick={onClose} className="p-1.5 hover:bg-surface-container rounded-lg">
-            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">close</span>
+            <i className="fa-solid fa-xmark text-[16px] text-on-surface-variant"></i>
           </button>
         </div>
 
@@ -70,7 +70,7 @@ function AdmissionModal({ onClose }) {
               {['Birth Certificate','Aadhaar Card','Transfer Certificate','Passport Photo','Previous Marksheet'].map(doc => (
                 <div key={doc} className="flex items-center justify-between p-3 rounded-lg bg-surface-container-low">
                   <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px] text-secondary">description</span>
+                    <i className="fa-solid fa-file-lines text-[15px] text-secondary"></i>
                     <span className="text-body-sm text-on-surface">{doc}</span>
                   </div>
                   <button className="text-label-sm text-primary font-semibold hover:underline">Upload</button>
@@ -95,18 +95,18 @@ function AdmissionModal({ onClose }) {
         <div className="flex gap-3 p-space-md border-t border-surface-container sticky bottom-0 bg-surface-container-lowest">
           {step > 1 ? (
             <button className="btn-ghost flex-1 justify-center" onClick={() => setStep(s=>s-1)}>
-              <span className="material-symbols-outlined text-[18px]">arrow_back</span> Back
+              <i className="fa-solid fa-arrow-left text-[14px] mr-1.5"></i> Back
             </button>
           ) : (
             <button className="btn-ghost flex-1 justify-center" onClick={onClose}>Cancel</button>
           )}
           {step < 4 ? (
             <button className="btn-primary flex-1 justify-center" onClick={() => setStep(s=>s+1)}>
-              Next <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              Next <i className="fa-solid fa-arrow-right text-[14px] ml-1.5"></i>
             </button>
           ) : (
             <button className="btn-primary flex-1 justify-center" onClick={onClose}>
-              <span className="material-symbols-outlined text-[18px]">check_circle</span> Confirm Admission
+              <i className="fa-solid fa-circle-check text-[15px] mr-1.5"></i> Confirm Admission
             </button>
           )}
         </div>
@@ -134,7 +134,7 @@ export default function StudentsPage() {
             <p className="text-body-md text-on-surface-variant">Manage student records, admissions and enrollment</p>
           </div>
           <button className="btn-primary" onClick={() => setShowModal(true)}>
-            <span className="material-symbols-outlined text-[18px]">person_add</span>
+            <i className="fa-solid fa-user-plus text-[15px]"></i>
             New Admission
           </button>
         </div>
@@ -142,7 +142,7 @@ export default function StudentsPage() {
         {/* Search bar */}
         <div className="card p-space-md">
           <div className="relative max-w-sm">
-            <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-on-surface-variant">search</span>
+            <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-[14px] text-on-surface-variant"></i>
             <input className="input-field pl-9" placeholder="Search by name or admission no..." value={search} onChange={e=>setSearch(e.target.value)} />
           </div>
         </div>
@@ -180,14 +180,14 @@ export default function StudentsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
-                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors">
-                          <span className="material-symbols-outlined text-[16px]">visibility</span>
+                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors" title="View">
+                          <i className="fa-solid fa-eye text-[14px]"></i>
                         </button>
-                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors">
-                          <span className="material-symbols-outlined text-[16px]">edit</span>
+                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors" title="Edit">
+                          <i className="fa-solid fa-pen-to-square text-[14px]"></i>
                         </button>
-                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-error transition-colors">
-                          <span className="material-symbols-outlined text-[16px]">delete</span>
+                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-error transition-colors" title="Delete">
+                          <i className="fa-solid fa-trash-can text-[14px]"></i>
                         </button>
                       </div>
                     </td>

@@ -1,7 +1,14 @@
-// PageWrapper.jsx — Standard page chrome with breadcrumb + status bar
+// PageWrapper.tsx — Standard page chrome with breadcrumb + status bar
+import React, { ReactNode } from 'react'
 import { Breadcrumb } from './Breadcrumb'
 
-export default function PageWrapper({ breadcrumb = [], statusText, children }) {
+export interface PageWrapperProps {
+  breadcrumb?: string[]
+  statusText?: string
+  children: ReactNode
+}
+
+export default function PageWrapper({ breadcrumb = [], statusText, children }: PageWrapperProps) {
   return (
     <div className="flex flex-col w-full animate-fade-in">
       {/* Breadcrumb bar */}

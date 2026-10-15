@@ -1,0 +1,102 @@
+================================================================================
+EDUSUITE PRO - ENTERPRISE SCHOOL ERP
+MASTER TASK LIST (ORDERED BY PRIORITY: HIGH TO LOW)
+================================================================================
+
+--------------------------------------------------------------------------------
+[PRIORITY 1: CRITICAL / HIGH] - FOUNDATION & BACKEND-FRONTEND CONNECTION
+--------------------------------------------------------------------------------
+
+[x] TASK-01 | HIGH | Database Setup & Migration/Seed Execution
+    - Create MySQL database named 'school_erp_system' in WAMP (127.0.0.1:3306).
+    - Run 'php artisan migrate:fresh --seed' in backend/ directory.
+
+[ ] TASK-02 | HIGH | Start & Verify Backend API Server
+    - Start Laravel dev server using 'php artisan serve --port=8000'.
+    - Test health endpoint: GET http://127.0.0.1:8000/api/v1/health.
+    - Test authentication endpoint: POST http://127.0.0.1:8000/api/v1/auth/login.
+
+[ ] TASK-03 | HIGH | Configure Frontend Environment & API Client
+    - Ensure frontend/.env contains: VITE_API_URL=http://localhost:8000/api/v1.
+    - Verify frontend/src/lib/axios.js attaches Bearer token from Zustand store.
+
+[ ] TASK-04 | HIGH | Implement Login Flow & Protected Routes
+    - Build LoginPage.jsx component with email/password input.
+    - Connect login form to POST /api/v1/auth/login.
+    - Store returned Sanctum token and user object in Zustand (useAuthStore).
+    - Protect routes: show Login page if unauthenticated; show AdminLayout if authenticated.
+    - Add working Logout button in the header/sidebar profile menu.
+
+[ ] TASK-05 | HIGH | Dynamic Dashboard KPIs
+    - Connect frontend/src/pages/Dashboard.jsx to GET /api/v1/dashboard/kpi.
+    - Replace hardcoded counters (students, staff, classes, institutes) with live API response.
+
+--------------------------------------------------------------------------------
+[PRIORITY 2: MEDIUM-HIGH] - PHASE 1 CORE MASTER DATA CRUD
+--------------------------------------------------------------------------------
+
+[ ] TASK-06 | MED-HIGH | Institute & Campus Branch Management
+    - Connect InstitutePage.jsx to GET /api/v1/institutes.
+    - Implement Create/Edit institute via POST & PUT /api/v1/institutes.
+    - Connect branch management (GET/POST /api/v1/branches).
+
+[ ] TASK-07 | MED-HIGH | Academic Year & Term/Session Management
+    - Connect AcademicYearPage.jsx to GET /api/v1/academic-years.
+    - Implement Add Year, Add Terms, and 'Set Current Session' (POST /api/v1/academic-years/{id}/set-current).
+
+[ ] TASK-08 | MED-HIGH | Class, Section & Subject Configuration
+    - Connect ClassSubjectPage.jsx to GET /api/v1/classes and GET /api/v1/subjects.
+    - Support adding sections (POST /api/v1/classes/{id}/sections).
+    - Support assigning subjects to classes (POST /api/v1/classes/{id}/assign-subject).
+
+[ ] TASK-09 | MED-HIGH | Staff & Faculty Management
+    - Connect StaffPage.jsx to GET /api/v1/staff.
+    - Connect department and designation filters (GET /api/v1/departments, /api/v1/designations).
+    - Implement staff onboarding form (POST /api/v1/staff).
+
+[ ] TASK-10 | MED-HIGH | Student Admission & Enrollment
+    - Connect StudentsPage.jsx to GET /api/v1/students.
+    - Implement admission inquiry submission and student enrollment (POST /api/v1/students, POST /api/v1/students/{id}/enroll).
+
+[ ] TASK-11 | MED-HIGH | User Accounts & Role Permissions
+    - Connect UsersPage.jsx to GET /api/v1/users, POST /api/v1/users.
+    - Connect roles and Spatie permissions list (GET /api/v1/roles, GET /api/v1/permissions).
+    - Implement user status toggle (PATCH /api/v1/users/{id}/toggle-status).
+
+[ ] TASK-12 | MED-HIGH | System Settings Integration
+    - Connect SettingsPage.jsx to GET /api/v1/settings.
+    - Implement save batch configuration (POST /api/v1/settings/batch).
+
+--------------------------------------------------------------------------------
+[PRIORITY 3: MEDIUM] - PHASE 2 DAILY ACADEMIC OPERATIONS
+--------------------------------------------------------------------------------
+
+[ ] TASK-13 | MEDIUM | Student & Staff Attendance Tracking
+    - Build database migration & API for daily and period-wise attendance.
+    - Build attendance marking table in React frontend.
+
+[ ] TASK-14 | MEDIUM | Timetable & Schedule Management
+    - Build class & teacher timetable matrix API and interactive grid UI.
+
+[ ] TASK-15 | MEDIUM | Homework, Syllabus & Lesson Planner
+    - Implement lesson plan submission and homework file uploads (storage:link).
+
+--------------------------------------------------------------------------------
+[PRIORITY 4: LOW] - PHASE 3 & 4 EXTENDED MODULES & PORTALS
+--------------------------------------------------------------------------------
+
+[ ] TASK-16 | LOW | Fee Management & Payment Gateway
+    - Fee heads, installment structures, invoice generation, payment gateway integration, receipts.
+
+[ ] TASK-17 | LOW | HR & Payroll
+    - Monthly salary generation, deductions, payslips download.
+
+[ ] TASK-18 | LOW | Examination & Report Cards
+    - Exam schedules, marks entry, grading scales, and PDF report cards.
+
+[ ] TASK-19 | LOW | Library & Transport Fleet Management
+    - Book issue/returns, barcode scanning, vehicle routes and stop assignments.
+
+[ ] TASK-20 | LOW | Dedicated Student & Parent Portals
+    - Role-restricted views for students and parents on mobile/web.
+================================================================================

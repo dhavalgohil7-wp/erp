@@ -14,7 +14,7 @@ export default function SettingsPage() {
           <div className="xl:col-span-2 flex flex-col gap-space-md">
             <div className="card p-space-md animate-fade-in">
               <h2 className="text-headline-sm text-on-surface mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[20px] text-primary">language</span>
+                <i className="fa-solid fa-globe text-[18px] text-primary"></i>
                 General Configuration
               </h2>
               <div className="flex flex-col gap-4">
@@ -39,7 +39,7 @@ export default function SettingsPage() {
 
             <div className="card p-space-md animate-fade-in">
               <h2 className="text-headline-sm text-on-surface mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[20px] text-primary">toggle_on</span>
+                <i className="fa-solid fa-toggle-on text-[18px] text-primary"></i>
                 Module Toggles
               </h2>
               <div className="flex flex-col gap-3">
@@ -66,7 +66,7 @@ export default function SettingsPage() {
           <div className="flex flex-col gap-space-md">
             <div className="card p-space-md animate-fade-in">
               <h2 className="text-headline-sm text-on-surface mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[20px] text-primary">sms</span>
+                <i className="fa-solid fa-comment-sms text-[18px] text-primary"></i>
                 SMS Gateway
               </h2>
               <div className="flex flex-col gap-3">
@@ -80,7 +80,7 @@ export default function SettingsPage() {
 
             <div className="card p-space-md animate-fade-in">
               <h2 className="text-headline-sm text-on-surface mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[20px] text-primary">payments</span>
+                <i className="fa-solid fa-credit-card text-[18px] text-primary"></i>
                 Payment Gateway
               </h2>
               <div className="flex flex-col gap-3">
@@ -94,13 +94,13 @@ export default function SettingsPage() {
 
             <div className="card p-space-md animate-fade-in">
               <h2 className="text-headline-sm text-on-surface mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[20px] text-primary">palette</span>
+                <i className="fa-solid fa-palette text-[18px] text-primary"></i>
                 Branding
               </h2>
               <div className="flex flex-col gap-3">
                 <div><label className="text-label-md text-on-surface-variant block mb-1.5">Institute Logo</label>
                   <button className="btn-secondary w-full justify-center">
-                    <span className="material-symbols-outlined text-[18px]">upload</span> Upload Logo
+                    <i className="fa-solid fa-upload text-[15px] mr-1.5"></i> Upload Logo
                   </button></div>
                 <div><label className="text-label-md text-on-surface-variant block mb-1.5">Primary Color</label>
                   <input className="input-field" type="color" defaultValue="#3525cd" /></div>
@@ -112,7 +112,7 @@ export default function SettingsPage() {
         <div className="flex justify-end gap-3">
           <button className="btn-ghost">Reset to Defaults</button>
           <button className="btn-primary">
-            <span className="material-symbols-outlined text-[18px]">save</span>
+            <i className="fa-solid fa-floppy-disk text-[15px]"></i>
             Save All Settings
           </button>
         </div>

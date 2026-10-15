@@ -16,7 +16,7 @@ export default function AcademicYearPage() {
             <p className="text-body-md text-on-surface-variant">Manage academic years, terms and promotion rules</p>
           </div>
           <button className="btn-primary">
-            <span className="material-symbols-outlined text-[18px]">add</span>
+            <i className="fa-solid fa-plus text-[15px]"></i>
             New Academic Year
           </button>
         </div>
@@ -32,7 +32,7 @@ export default function AcademicYearPage() {
               )}
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-primary-fixed/40 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[28px] text-primary">calendar_month</span>
+                  <i className="fa-solid fa-calendar-days text-[24px] text-primary"></i>
                 </div>
                 <div>
                   <h3 className="text-headline-sm text-on-surface">{s.name}</h3>
@@ -55,7 +55,7 @@ export default function AcademicYearPage() {
               </div>
               <div className="flex gap-2 pt-3 border-t border-surface-container">
                 <button className="btn-secondary flex-1 justify-center text-xs">
-                  <span className="material-symbols-outlined text-[15px]">tune</span> Configure
+                  <i className="fa-solid fa-sliders text-[14px]"></i> Configure
                 </button>
                 {!s.current && (
                   <button className="btn-ghost text-xs px-2 py-1.5">Archive</button>

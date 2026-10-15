@@ -29,7 +29,7 @@ export default function UsersPage() {
             <p className="text-body-md text-on-surface-variant">Manage system users, roles and granular permissions</p>
           </div>
           <button className="btn-primary">
-            <span className="material-symbols-outlined text-[18px]">person_add</span>
+            <i className="fa-solid fa-user-plus text-[15px]"></i>
             Add User
           </button>
         </div>
@@ -79,11 +79,11 @@ export default function UsersPage() {
                       <td className="px-4 py-3 text-body-sm text-on-surface-variant">{u.lastLogin}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
-                          <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors">
-                            <span className="material-symbols-outlined text-[16px]">edit</span>
+                          <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors" title="Edit">
+                            <i className="fa-solid fa-pen-to-square text-[14px]"></i>
                           </button>
-                          <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-error transition-colors">
-                            <span className="material-symbols-outlined text-[16px]">delete</span>
+                          <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-error transition-colors" title="Delete">
+                            <i className="fa-solid fa-trash-can text-[14px]"></i>
                           </button>
                         </div>
                       </td>
@@ -99,7 +99,7 @@ export default function UsersPage() {
               <div key={role.id} className="card p-space-md hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[24px] text-primary">shield</span>
+                    <i className="fa-solid fa-shield-halved text-[20px] text-primary"></i>
                     <h3 className="text-headline-sm text-on-surface">{role.name}</h3>
                   </div>
                   <span className={`badge-status ${role.color}`}>{role.permissions}</span>
@@ -109,10 +109,10 @@ export default function UsersPage() {
                 </div>
                 <div className="flex gap-2 pt-3 border-t border-surface-container">
                   <button className="btn-secondary flex-1 justify-center text-xs">
-                    <span className="material-symbols-outlined text-[15px]">tune</span> Permissions
+                    <i className="fa-solid fa-sliders text-[13px]"></i> Permissions
                   </button>
-                  <button className="btn-ghost px-2 py-1.5">
-                    <span className="material-symbols-outlined text-[15px]">edit</span>
+                  <button className="btn-ghost px-2 py-1.5" title="Edit">
+                    <i className="fa-solid fa-pen-to-square text-[14px]"></i>
                   </button>
                 </div>
               </div>

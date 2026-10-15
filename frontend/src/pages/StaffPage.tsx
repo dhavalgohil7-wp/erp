@@ -26,7 +26,7 @@ export default function StaffPage() {
             <p className="text-body-md text-on-surface-variant">Manage departments, designations, joining & exit records</p>
           </div>
           <button className="btn-primary" onClick={() => setShowModal(true)}>
-            <span className="material-symbols-outlined text-[18px]">person_add</span>
+            <i className="fa-solid fa-user-plus text-[15px]"></i>
             Add Staff
           </button>
         </div>
@@ -34,14 +34,14 @@ export default function StaffPage() {
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-space-md stagger">
           {[
-            { label: 'Total Staff',  value: '248', icon: 'badge',       bg: 'bg-primary-fixed/50' },
-            { label: 'Teaching',     value: '148', icon: 'school',      bg: 'bg-tertiary-fixed/30' },
-            { label: 'Non-Teaching', value: '86',  icon: 'support',     bg: 'bg-secondary-fixed/50' },
-            { label: 'On Leave',     value: '14',  icon: 'event_busy',  bg: 'bg-error-container' },
+            { label: 'Total Staff',  value: '248', icon: 'fa-solid fa-id-badge',       bg: 'bg-primary-fixed/50' },
+            { label: 'Teaching',     value: '148', icon: 'fa-solid fa-graduation-cap', bg: 'bg-tertiary-fixed/30' },
+            { label: 'Non-Teaching', value: '86',  icon: 'fa-solid fa-headset',        bg: 'bg-secondary-fixed/50' },
+            { label: 'On Leave',     value: '14',  icon: 'fa-solid fa-calendar-xmark', bg: 'bg-error-container' },
           ].map(s => (
             <div key={s.label} className="card p-space-md flex items-center gap-3 animate-fade-in">
               <div className={`w-10 h-10 rounded-lg ${s.bg} flex items-center justify-center`}>
-                <span className="material-symbols-outlined text-[20px] text-primary">{s.icon}</span>
+                <i className={`${s.icon} text-[18px] text-primary`}></i>
               </div>
               <div>
                 <div className="stat-value text-[20px]">{s.value}</div>
@@ -55,7 +55,7 @@ export default function StaffPage() {
         <div className="card p-space-md">
           <div className="flex flex-wrap gap-3 items-center">
             <div className="relative flex-1 min-w-[200px]">
-              <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-on-surface-variant">search</span>
+              <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-[14px] text-on-surface-variant"></i>
               <input className="input-field pl-9" placeholder="Search by name, dept, emp ID..." value={search} onChange={e=>setSearch(e.target.value)} />
             </div>
             <select className="input-field w-auto">
@@ -100,11 +100,11 @@ export default function StaffPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
-                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors">
-                          <span className="material-symbols-outlined text-[16px]">visibility</span>
+                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors" title="View">
+                          <i className="fa-solid fa-eye text-[14px]"></i>
                         </button>
-                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors">
-                          <span className="material-symbols-outlined text-[16px]">edit</span>
+                        <button className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-primary transition-colors" title="Edit">
+                          <i className="fa-solid fa-pen-to-square text-[14px]"></i>
                         </button>
                       </div>
                     </td>
@@ -123,7 +123,7 @@ export default function StaffPage() {
             <div className="flex items-center justify-between p-space-md border-b border-surface-container">
               <h2 className="text-headline-md text-on-surface">Add Staff Member</h2>
               <button onClick={()=>setShowModal(false)} className="p-1.5 hover:bg-surface-container rounded-lg">
-                <span className="material-symbols-outlined text-[20px] text-on-surface-variant">close</span>
+                <i className="fa-solid fa-xmark text-[16px] text-on-surface-variant"></i>
               </button>
             </div>
             <div className="p-space-md flex flex-col gap-4">
@@ -146,7 +146,7 @@ export default function StaffPage() {
             <div className="flex gap-3 p-space-md border-t border-surface-container">
               <button className="btn-ghost flex-1 justify-center" onClick={()=>setShowModal(false)}>Cancel</button>
               <button className="btn-primary flex-1 justify-center" onClick={()=>setShowModal(false)}>
-                <span className="material-symbols-outlined text-[18px]">save</span> Save Staff
+                <i className="fa-solid fa-floppy-disk text-[15px]"></i> Save Staff
               </button>
             </div>
           </div>
