@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react'
 import PageWrapper from '../components/ui/PageWrapper'
 import Icon from '../components/common/Icon'
 import { Link } from 'react-router-dom'
@@ -84,15 +85,17 @@ interface ModuleTileProps {
   iconColor?: string
 }
 
-/* ── Module tile ── */
-function ModuleTile({ icon, label, badge, iconColor = 'text-primary-container' }: ModuleTileProps) {
+/* ── Module tile matching the user's screenshot & ERP theme ── */
+function ModuleTile({ icon, label, badge, iconColor }: ModuleTileProps) {
   return (
-    <div className="module-tile">
+    <div className="erp-module-card group h-full">
       {badge && (
         <span className={badge === 'Update' ? 'badge-update' : 'badge-new'}>{badge}</span>
       )}
-      <Icon name={icon} className={`text-[24px] ${iconColor} group-hover:scale-110 transition-transform mb-1`} />
-      <span className="text-[12px] font-semibold text-on-surface leading-snug line-clamp-2">{label}</span>
+      <div className="erp-module-icon-wrap">
+        <Icon name={icon} className={`erp-module-icon ${iconColor ?? ''}`} />
+      </div>
+      <span className="erp-module-label">{label}</span>
     </div>
   )
 }
@@ -130,40 +133,74 @@ function BirthdayRow({ initials, name, role, btnLabel, avatarBg, avatarText }: B
    DASHBOARD — OVERVIEW & ANALYTICS
 ═══════════════════════════════════════════════ */
 export default function Dashboard() {
-  const div1Modules = [
-    { icon: 'dashboard', label: 'Overview & Analytics', path: 'overview-and-analytics', iconColor: 'text-secondary' },
-    { icon: 'account_balance', label: 'Institute', path: 'institute-setup', iconColor: 'text-secondary' },
-    { icon: 'calendar_month', label: 'Calendar & Events', path: 'calendar-and-events', iconColor: 'text-secondary' },
-    { icon: 'quiz', label: 'Exam Planner', path: 'exam-planner', iconColor: 'text-secondary' },
-    { icon: 'analytics', label: 'Analysis & Reports', path: 'analysis-and-reports', iconColor: 'text-secondary' },
-    { icon: 'assignment', label: 'Academic Planner', path: 'academic-planner', iconColor: 'text-secondary' },
-    { icon: 'schedule', label: 'Timetable', path: 'timetable-management', iconColor: 'text-secondary' },
-    { icon: 'how_to_reg', label: 'Student Attendance', path: 'student-attendance', iconColor: 'text-secondary' },
-    { icon: 'edit_note', label: 'Homework & Classwork', path: 'homework-and-classwork', iconColor: 'text-secondary' },
-    { icon: 'menu_book', label: 'Lesson Planning', path: 'lesson-planning', iconColor: 'text-secondary' },
-    { icon: 'cloud_upload', label: 'Material Upload', path: 'material-upload', iconColor: 'text-secondary' },
-    { icon: 'verified', label: 'Certificate Generator', path: 'certificate-generator', iconColor: 'text-secondary' },
-    { icon: 'sms', label: 'SMS & System Logs', path: 'sms-and-system-logs', iconColor: 'text-secondary' },
-    { icon: 'cake', label: 'Birthday Hub', path: 'birthday-hub', iconColor: 'text-secondary' },
-  ];
-
   const { setActivePath, setActiveSection } = useUIStore();
-  const div2Modules = [
+  const [viewMode, setViewMode] = useState<'dual' | 'matrix'>('dual')
+  const [searchQuery, setSearchQuery] = useState('')
 
-    { icon: 'person_add', label: 'Admission & Inquiry', path: 'admission-and-inquiry', iconColor: 'text-secondary' },
-    { icon: 'payments', label: 'Fee Management', path: 'fee-management', iconColor: 'text-secondary' },
-    { icon: 'badge', label: 'HR Management', path: 'hr-and-payroll', iconColor: 'text-secondary' },
-    { icon: 'fingerprint', label: 'Biometric Attendance', path: 'biometric-attendance', iconColor: 'text-secondary' },
-    { icon: 'directions_bus', label: 'Transportation', path: 'transportation-fleet', iconColor: 'text-secondary' },
-    { icon: 'local_library', label: 'Library', path: 'library-hub', iconColor: 'text-secondary' },
-    { icon: 'hotel', label: 'Hostel', path: 'hostel-management', iconColor: 'text-secondary' },
-    { icon: 'account_balance_wallet', label: 'Student Wallet', path: 'student-wallet', iconColor: 'text-secondary' },
-    { icon: 'restaurant', label: 'Canteen', path: 'canteen-pos', iconColor: 'text-secondary' },
-    { icon: 'inventory_2', label: 'Inventory', path: 'inventory-and-assets', iconColor: 'text-secondary' },
-    { icon: 'badge', label: 'Gate Pass', path: 'gate-pass-management', iconColor: 'text-secondary' },
-    { icon: 'support_agent', label: 'Grievance & Complaints', path: 'grievance-and-complaints', iconColor: 'text-secondary' },
-    { icon: 'receipt_long', label: 'Expense Management', path: 'expense-management', iconColor: 'text-secondary' },
+  // Division 1: System Setup (19 modules matching screenshot)
+  const div1Modules = [
+    { icon: 'fa-solid fa-users', label: 'Institute Management', path: 'institute-management' },
+    { icon: 'fa-solid fa-calendar-check', label: 'Calendar & Analysis', path: 'calendar-and-analysis' },
+    { icon: 'fa-solid fa-calendar-plus', label: 'Exam Planner & Scheduler', path: 'exam-planner-and-scheduler' },
+    { icon: 'fa-solid fa-chart-pie', label: 'Analysis & Reports', path: 'analysis-and-reports' },
+    { icon: 'fa-solid fa-arrow-up-from-bracket', label: 'Material Upload', path: 'material-upload' },
+    { icon: 'fa-solid fa-gears', label: 'Settings', path: 'system-settings' },
+    { icon: 'fa-solid fa-file-lines', label: 'Material Management', path: 'material-management' },
+    { icon: 'fa-solid fa-server', label: 'System Logs', path: 'system-logs' },
+    { icon: 'fa-solid fa-cake-candles', label: 'Birthday', path: 'birthdays' },
+    { icon: 'fa-solid fa-print', label: 'Certificate Generation', path: 'certificate-generation' },
+    { icon: 'fa-solid fa-inbox', label: 'Sms Log', path: 'sms-log' },
+    { icon: 'fa-solid fa-list-check', label: 'Student Attendance', path: 'student-attendance' },
+    { icon: 'fa-solid fa-calendar-week', label: 'Academic Planner', path: 'academic-planner' },
+    { icon: 'fa-solid fa-book-bookmark', label: 'Dynamic Reports', path: 'dynamic-reports' },
+    { icon: 'fa-solid fa-table-cells', label: 'Timetable Management', path: 'timetable-management' },
+    { icon: 'fa-solid fa-book-open', label: 'Homework', path: 'homework' },
+    { icon: 'fa-solid fa-book-open-reader', label: 'Classwork', path: 'classwork' },
+    { icon: 'fa-solid fa-star', label: 'Lesson Planning', path: 'lesson-planning' },
+    { icon: 'fa-solid fa-comment-dots', label: 'User Remarks', path: 'user-remarks' },
   ];
+
+  // Division 2: All in one ERP Modules (21 modules matching screenshot)
+  const div2Modules = [
+    { icon: 'fa-solid fa-book', label: 'Library', path: 'library' },
+    { icon: 'fa-solid fa-handshake', label: 'Hr Management', path: 'hr-management' },
+    { icon: 'fa-solid fa-bus', label: 'Transportation', path: 'transportation' },
+    { icon: 'fa-solid fa-money-bill-wave', label: 'Fee Management', path: 'fee-management' },
+    { icon: 'fa-solid fa-circle-info', label: 'Inquiry/ Admission', path: 'inquiry-admission' },
+    { icon: 'fa-solid fa-id-badge', label: 'Attendance Machine', path: 'attendance-machine' },
+    { icon: 'fa-solid fa-bed', label: 'Hostel', path: 'hostel' },
+    { icon: 'fa-solid fa-globe', label: 'Website Builder', path: 'website-builder' },
+    { icon: 'fa-solid fa-box-archive', label: 'Target Management', path: 'target-management' },
+    { icon: 'fa-solid fa-award', label: 'Result Module', path: 'result-module' },
+    { icon: 'fa-solid fa-boxes-stacked', label: 'Inventory Management', path: 'inventory-management' },
+    { icon: 'fa-solid fa-wallet', label: 'Wallet', path: 'wallet' },
+    { icon: 'fa-solid fa-comments', label: 'Complaint / Grievance', path: 'complaint-grievance' },
+    { icon: 'fa-solid fa-utensils', label: 'Canteen Management', path: 'canteen-management' },
+    { icon: 'fa-solid fa-id-card', label: 'Gate Pass', path: 'gate-pass' },
+    { icon: 'fa-solid fa-receipt', label: 'Expense Management', path: 'expense-management' },
+    { icon: 'fa-solid fa-percent', label: 'Finance Management', path: 'finance-management' },
+    { icon: 'fa-solid fa-image', label: 'Gallery', path: 'gallery' },
+    { icon: 'fa-solid fa-phone', label: 'Voice Call', path: 'voice-call' },
+    { icon: 'fa-solid fa-headphones', label: 'Pocket Study', path: 'pocket-study' },
+    { icon: 'fa-solid fa-user-xmark', label: 'Exit Staff', path: 'exit-staff' },
+  ];
+
+  const filteredDiv1 = useMemo(() => {
+    if (!searchQuery.trim()) return div1Modules;
+    return div1Modules.filter(m => m.label.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery]);
+
+  const filteredDiv2 = useMemo(() => {
+    if (!searchQuery.trim()) return div2Modules;
+    return div2Modules.filter(m => m.label.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery]);
+
+  const allModulesCombined = useMemo(() => {
+    return [
+      ...filteredDiv1.map(m => ({ ...m, division: 'System Setup' })),
+      ...filteredDiv2.map(m => ({ ...m, division: 'All in one ERP Modules' })),
+    ];
+  }, [filteredDiv1, filteredDiv2]);
 
   return (
     <PageWrapper
@@ -212,50 +249,159 @@ export default function Dashboard() {
         </div>
 
         {/* ── Central Master Console ── */}
-        <div className="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+        <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/30">
           <div className="flex flex-wrap items-center justify-between gap-space-sm mb-space-md pb-space-sm border-b border-surface-container">
             <div className="flex items-center gap-space-sm">
-              <div className="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container">
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-xs">
                 <i className="fa-solid fa-table-cells-large text-[20px]"></i>
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-headline-sm text-on-surface">Central Master Operational Console</h2>
-                  <span className="px-2.5 py-0.5 rounded-full bg-tertiary-fixed/40 text-tertiary text-label-sm font-semibold flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse" /> 40 Modules Synchronized
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h2 className="text-headline-sm text-on-surface font-bold">Central Master Operational Console</h2>
+                  <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-label-sm font-semibold flex items-center gap-1.5 border border-primary/20">
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> 40 Modules Synchronized
                   </span>
                 </div>
                 <p className="text-body-sm text-on-surface-variant">Bi-lateral operational console mirroring full enterprise ERP architecture</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg text-body-sm">
-                <button className="px-3 py-1 rounded bg-surface-container-lowest text-label-sm text-on-surface font-semibold shadow-sm">Dual Division View</button>
-                <button className="px-3 py-1 rounded text-label-sm text-secondary hover:text-on-surface transition-colors">Compact Matrix</button>
+
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* Quick Filter Search */}
+              <div className="relative min-w-[200px]">
+                <i className="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-secondary text-[13px]"></i>
+                <input
+                  type="text"
+                  placeholder="Quick find module..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-surface-container-low text-body-sm text-on-surface placeholder:text-secondary/70 focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/30"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-2 text-secondary hover:text-on-surface text-[12px]"
+                  >
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                )}
+              </div>
+
+              {/* View Switcher */}
+              <div className="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg text-body-sm border border-outline-variant/30">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('dual')}
+                  className={`px-3 py-1 rounded text-label-sm font-semibold transition-all ${
+                    viewMode === 'dual'
+                      ? 'bg-surface-container-lowest text-on-surface shadow-xs text-primary'
+                      : 'text-secondary hover:text-on-surface'
+                  }`}
+                >
+                  <i className="fa-solid fa-columns mr-1.5 text-[11px]"></i>Dual Division View
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('matrix')}
+                  className={`px-3 py-1 rounded text-label-sm font-semibold transition-all ${
+                    viewMode === 'matrix'
+                      ? 'bg-surface-container-lowest text-on-surface shadow-xs text-primary'
+                      : 'text-secondary hover:text-on-surface'
+                  }`}
+                >
+                  <i className="fa-solid fa-grip mr-1.5 text-[11px]"></i>Compact Matrix
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Two-division grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-space-lg">
-            {/* Division 1 */}
-            <div className="flex flex-col bg-surface-container-low/60 rounded-xl p-space-md border border-surface-container">
-              <div className="flex items-center justify-between mb-space-sm pb-space-xs border-b border-surface-container">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-sm bg-primary-container" />
-                  <h3 className="text-headline-sm text-on-surface font-bold">System Setup + Communication</h3>
+          {/* Module View Content */}
+          {viewMode === 'dual' ? (
+            /* Two-division grid mirroring screenshot layout */
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-space-lg">
+              {/* Division 1: System Setup (19 Modules) */}
+              <div className="flex flex-col bg-surface-container-low/40 rounded-2xl p-space-md border border-outline-variant/30 shadow-xs">
+                <div className="flex items-center justify-between mb-4 pb-2.5 border-b border-surface-container">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+                    <h3 className="text-[17px] font-bold text-on-surface tracking-tight">System Setup</h3>
+                  </div>
+                  <span className="text-[12px] px-2.5 py-0.5 bg-primary/10 text-primary rounded-full font-semibold border border-primary/20">
+                    {filteredDiv1.length} Modules
+                  </span>
                 </div>
-                <span className="text-label-sm px-2 py-0.5 bg-surface-container text-secondary rounded font-semibold">19 Modules</span>
+                {filteredDiv1.length === 0 ? (
+                  <div className="py-12 text-center text-secondary text-body-sm">
+                    No modules match "{searchQuery}" in System Setup
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {filteredDiv1.map((m) => (
+                      <Link
+                        key={m.label}
+                        to={m.path}
+                        className="block focus:outline-none"
+                        onClick={() => {
+                          setActivePath(m.path)
+                          setActiveSection('System Setup')
+                        }}
+                      >
+                        <ModuleTile {...m} />
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 stagger">
-                {div1Modules.map((m) => (
+
+              {/* Division 2: All in one ERP Modules (21 Modules) */}
+              <div className="flex flex-col bg-surface-container-low/40 rounded-2xl p-space-md border border-outline-variant/30 shadow-xs">
+                <div className="flex items-center justify-between mb-4 pb-2.5 border-b border-surface-container">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-tertiary" />
+                    <h3 className="text-[17px] font-bold text-on-surface tracking-tight">All in one ERP Modules</h3>
+                  </div>
+                  <span className="text-[12px] px-2.5 py-0.5 bg-tertiary-fixed/60 text-tertiary rounded-full font-semibold border border-tertiary/20">
+                    {filteredDiv2.length} Modules
+                  </span>
+                </div>
+                {filteredDiv2.length === 0 ? (
+                  <div className="py-12 text-center text-secondary text-body-sm">
+                    No modules match "{searchQuery}" in ERP Modules
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {filteredDiv2.map((m) => (
+                      <Link
+                        key={m.label}
+                        to={m.path}
+                        className="block focus:outline-none"
+                        onClick={() => {
+                          setActivePath(m.path)
+                          setActiveSection('All in one ERP Modules')
+                        }}
+                      >
+                        <ModuleTile {...m} />
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* Compact Matrix View (All 40 Modules in unified matrix) */
+            <div className="flex flex-col gap-space-md">
+              <div className="flex items-center justify-between text-body-sm text-secondary">
+                <span>Showing <strong>{allModulesCombined.length}</strong> integrated enterprise modules</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                {allModulesCombined.map((m) => (
                   <Link
                     key={m.label}
                     to={m.path}
-                    className="module-tile-link"
+                    className="block focus:outline-none"
                     onClick={() => {
                       setActivePath(m.path)
-                      setActiveSection('System Setup & Academics')
+                      setActiveSection(m.division)
                     }}
                   >
                     <ModuleTile {...m} />
@@ -263,33 +409,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-
-            {/* Division 2 */}
-            <div className="flex flex-col bg-surface-container-low/60 rounded-xl p-space-md border border-surface-container">
-              <div className="flex items-center justify-between mb-space-sm pb-space-xs border-b border-surface-container">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-sm bg-tertiary" />
-                  <h3 className="text-headline-sm text-on-surface font-bold">All In One ERP Modules</h3>
-                </div>
-                <span className="text-label-sm px-2 py-0.5 bg-surface-container text-secondary rounded font-semibold">21 Modules</span>
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 stagger">
-                {div2Modules.map((m) => (
-                  <Link
-                    key={m.label}
-                    to={m.path}
-                    className="module-tile-link"
-                    onClick={() => {
-                      setActivePath(m.path)
-                      setActiveSection('All-In-One ERP')
-                    }}
-                  >
-                    <ModuleTile {...m} />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* ── KPI Cards ── */}
