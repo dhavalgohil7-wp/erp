@@ -1,0 +1,114 @@
+
+---
+
+## 📄 FILE 3: `phase1.txt`
+
+```txt
+================================================================================
+PHASE 1 — FOUNDATION MODULES
+School Management ERP System
+================================================================================
+
+PURPOSE
+-------
+Phase 1 establishes the foundation of the entire School ERP system. Every
+subsequent phase depends on the entities, relationships, and infrastructure
+built here. Nothing should be skipped. Nothing should be rushed.
+
+--------------------------------------------------------------------------------
+1. MODULES INCLUDED IN PHASE 1
+--------------------------------------------------------------------------------
+
+1.1 Institute Management
+    - Institute profile (name, logo, address, contact, board affiliation)
+    - Multi-branch / multi-campus support
+    - Branch-specific settings
+    - Academic session binding
+
+1.2 Academic Year & Session
+    - Create academic years (e.g., 2024-25)
+    - Define terms / semesters
+    - Set current/active session
+    - Promotion rules configuration
+
+1.3 User & Role Management
+    - User CRUD (admin, teacher, student, parent, staff)
+    - Role CRUD with granular permissions
+    - Permission assignment (Spatie)
+    - User-institute mapping
+    - Password policies
+
+1.4 Settings
+    - Global config (currency, timezone, language, date format)
+    - Module-level toggles
+    - SMS/Email/Payment gateway credentials
+    - Theme / branding
+
+1.5 Class & Section Management
+    - Classes (Nursery to Grade 12, or custom)
+    - Sections (A, B, C…)
+    - Streams (Science, Commerce, Arts)
+    - Houses / groups
+
+1.6 Subject Management
+    - Subjects (theory, practical, elective)
+    - Subject groups
+    - Class-subject mapping
+    - Teacher-subject assignment structure
+
+1.7 Student Profile & Admission
+    - Admission inquiry
+    - Admission form
+    - Student master record
+    - Guardian details
+    - Document uploads
+    - Enrollment to class/section
+
+1.8 Staff / Employee Records
+    - Staff profile
+    - Departments & designations
+    - Joining / exit
+    - Document storage
+    - Reporting manager
+
+--------------------------------------------------------------------------------
+2. DELIVERABLES
+--------------------------------------------------------------------------------
+
+BACKEND (Laravel 11)
+    [ ] Laravel project scaffolded with modular structure
+    [ ] MySQL
+    [ ] Redis configured (cache, session, queue)
+    [ ] Sanctum installed & configured
+    [ ] Spatie Permission installed & configured
+    [ ] Migrations for all Phase 1 entities
+    [ ] Seeders (roles, permissions, default admin, sample classes)
+    [ ] Models with relationships
+    [ ] Repositories & Services for each module
+    [ ] API Resources (response transformers)
+    [ ] Form Requests (validation)
+    [ ] Controllers (Api/V1/)
+    [ ] Routes (api/v1/*)
+    [ ] Policies for authorization
+    [ ] Feature tests for critical flows
+    [ ] API documentation (OpenAPI / Scribe)
+
+FRONTEND (React 18 + TypeScript)
+    [ ] Write your code in "frontend" folder. it have installed react.js
+    [ ] Vite + React + TS scaffolded
+    [ ] TailwindCSS + shadcn/ui installed
+    [ ] React Router v6 with protected routes
+    [ ] Axios instance with interceptors (auth, error handling)
+    [ ] React Query setup
+    [ ] Zustand store for auth & global state
+    [ ] Layouts (admin, auth, error)
+    [ ] Institute CRUD pages
+    [ ] Academic Year CRUD pages
+    [ ] User & Role management pages
+    [ ] Class / Section / Subject CRUD pages
+    [ ] Student CRUD + admission form
+    [ ] Staff CRUD pages
+    [ ] Settings page
+    [ ] Dashboard (basic KPIs)
+    [ ] Form validation with React Hook Form + Zod
+    [ ] Role-based UI rendering
