@@ -1,9 +1,9 @@
 // PageWrapper.tsx — Standard page chrome with breadcrumb + status bar
 import React, { ReactNode } from 'react'
-import { Breadcrumb } from './Breadcrumb'
+import { Breadcrumb, BreadcrumbItem } from './Breadcrumb'
 
 export interface PageWrapperProps {
-  breadcrumb?: string[]
+  breadcrumb?: BreadcrumbItem[]
   statusText?: string
   children: ReactNode
 }
