@@ -197,61 +197,8 @@ export default function InstituteSetupSection({ initialTab, onClose }: Institute
 
   return (
     <div className="bg-surface-container-lowest rounded-2xl p-space-lg border border-outline-variant/30 shadow-sm animate-fade-in space-y-space-md">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-space-sm border-b border-surface-container">
-        <div>
-          <h2 className="text-headline-sm text-on-surface font-bold flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-tertiary-fixed/30 flex items-center justify-center text-tertiary text-[15px]">
-              <i className="fa-solid fa-layer-group"></i>
-            </span>
-            Section 2 — Institute Setup
-          </h2>
-          <p className="text-body-sm text-on-surface-variant mt-0.5">
-            Standardized CRUD sub-modules (Modules 4–10) configuring foundational institutional structures.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={openAdd}
-          className="btn-primary text-sm px-4 py-2 font-semibold flex items-center gap-2 shadow-xs"
-        >
-          <i className="fa-solid fa-plus text-[13px]"></i>
-          Add New Record
-        </button>
-      </div>
-
-      {/* Sub-Tab Navigator */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-surface-container scrollbar-none">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => {
-              setActiveTab(tab.id as SetupSubTab)
-              setSearch('')
-            }}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-              activeTab === tab.id
-                ? 'bg-primary text-white shadow-xs'
-                : 'bg-surface-container-low hover:bg-surface-container text-on-surface-variant'
-            }`}
-          >
-            <i className={`fa-solid ${tab.icon}`}></i>
-            <span>{tab.label}</span>
-            <span
-              className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-surface-container-highest text-secondary'
-              }`}
-            >
-              {tab.count}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Search Bar */}
-      <div className="flex items-center justify-between gap-3">
+      {/* Toolbar: Search (left) + Add Button (right) */}
+      <div className="flex items-center justify-between gap-4 pb-space-sm border-b border-surface-container">
         <div className="relative flex-1 max-w-sm">
           <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-secondary text-[12px]"></i>
           <input
@@ -262,6 +209,14 @@ export default function InstituteSetupSection({ initialTab, onClose }: Institute
             className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-surface-container-low text-xs text-on-surface border border-outline-variant/30 focus:border-primary outline-none"
           />
         </div>
+        <button
+          type="button"
+          onClick={openAdd}
+          className="btn-primary text-sm px-4 py-2 font-semibold flex items-center gap-2 shadow-xs whitespace-nowrap"
+        >
+          <i className="fa-solid fa-plus text-[13px]"></i>
+          Add New Record
+        </button>
       </div>
 
       {/* Active Tab Table Display */}

@@ -184,32 +184,25 @@ export default function UserManagementSection({ defaultRole, onClose }: UserMana
 
   return (
     <div className="bg-surface-container-lowest rounded-2xl p-space-lg border border-outline-variant/30 shadow-sm animate-fade-in space-y-space-md">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-space-sm border-b border-surface-container">
-        <div>
-          <h2 className="text-headline-sm text-on-surface font-bold flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-[15px]">
-              <i className="fa-solid fa-users-gear"></i>
-            </span>
-            Section 3 — User Management
-          </h2>
-          <p className="text-body-sm text-on-surface-variant mt-0.5">
-            Modules 11, 12, 13 with forms dynamically integrated with Default + Custom fields from Master Setup.
-          </p>
+      {/* Toolbar: Search (left) + Add Button (right) */}
+      <div className="flex items-center justify-between gap-4 pb-space-sm border-b border-surface-container">
+        <div className="relative flex-1 max-w-md">
+          <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-secondary text-[12px]"></i>
+          <input
+            type="text"
+            placeholder={`Search ${activeTab} records by name, email, or custom values...`}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-surface-container-low text-xs text-on-surface border border-outline-variant/30 focus:border-primary outline-none"
+          />
         </div>
-
         <button
           type="button"
           onClick={openAddModal}
-          className="btn-primary text-sm px-4 py-2 font-semibold flex items-center gap-2 shadow-xs"
+          className="btn-primary text-sm px-4 py-2 font-semibold flex items-center gap-2 shadow-xs whitespace-nowrap"
         >
           <i className="fa-solid fa-user-plus text-[13px]"></i>
-          Add New{' '}
-          {activeTab === 'student'
-            ? 'Student (Module 11)'
-            : activeTab === 'faculties'
-            ? 'Faculty (Module 12)'
-            : 'Admin (Module 13)'}
+          Add New Records
         </button>
       </div>
 
@@ -263,20 +256,6 @@ export default function UserManagementSection({ defaultRole, onClose }: UserMana
         </div>
         <div className="flex items-center gap-1 text-[11px] font-mono text-purple-700">
           <span>Unique constraints enforced</span>
-        </div>
-      </div>
-
-      {/* Search Bar */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="relative flex-1 max-w-md">
-          <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-secondary text-[12px]"></i>
-          <input
-            type="text"
-            placeholder={`Search ${activeTab} records by name, email, or custom values...`}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-surface-container-low text-xs text-on-surface border border-outline-variant/30 focus:border-primary outline-none"
-          />
         </div>
       </div>
 

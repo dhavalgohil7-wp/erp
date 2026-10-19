@@ -274,63 +274,31 @@ const INITIAL_CUSTOM_FIELDS: Record<string, CustomFieldDef[]> = {
   student: [
     {
       id: 'cf-1',
-      title: 'Blood Group',
-      fieldType: 'Dropdown',
-      required: true,
-      isUnique: false,
-      optionsString: 'A+, A-, B+, B-, O+, O-, AB+, AB-',
-    },
-    {
-      id: 'cf-2',
-      title: 'Transportation Required',
-      fieldType: 'Radio',
+      title: '',
+      fieldType: 'Text',
       required: false,
       isUnique: false,
-      optionsString: 'Yes, No',
-    },
-    {
-      id: 'cf-3',
-      title: 'Aadhaar / National ID',
-      fieldType: 'Text',
-      required: true,
-      isUnique: true,
       optionsString: '',
     },
   ],
   faculties: [
     {
-      id: 'cf-4',
-      title: 'Specialization Area',
+      id: 'cf-2',
+      title: '',
       fieldType: 'Text',
-      required: true,
+      required: false,
       isUnique: false,
-      optionsString: '',
-    },
-    {
-      id: 'cf-5',
-      title: 'Employment Type',
-      fieldType: 'Dropdown',
-      required: true,
-      isUnique: false,
-      optionsString: 'Full Time, Part Time, Visiting, Guest Lecturer',
-    },
-    {
-      id: 'cf-6',
-      title: 'Staff Identification PAN',
-      fieldType: 'Text',
-      required: true,
-      isUnique: true,
       optionsString: '',
     },
   ],
   'institute admin': [
     {
-      id: 'cf-7',
-      title: 'Security Clearance Tier',
-      fieldType: 'Dropdown',
-      required: true,
+      id: 'cf-3',
+      title: '',
+      fieldType: 'Text',
+      required: false,
       isUnique: false,
-      optionsString: 'Tier 1 (Master Admin), Tier 2 (Academic Admin), Tier 3 (Finance Admin)',
+      optionsString: '',
     },
   ],
 }
@@ -413,17 +381,8 @@ export const useInstituteStore = create<InstituteStoreState>()(
       userRoles: [
         { id: 'role-1', name: 'Student', isDefault: true, userCount: 3480, status: 'Active', description: 'Enrolled students' },
         { id: 'role-2', name: 'Faculty', isDefault: false, userCount: 184, status: 'Active', description: 'Teaching faculty & mentors' },
-        { id: 'role-3', name: 'Principal', isDefault: false, userCount: 1, status: 'Active', description: 'Head of Institution' },
-        { id: 'role-4', name: 'Peon', isDefault: false, userCount: 12, status: 'Active', description: 'Support services' },
-        { id: 'role-5', name: 'Librarian', isDefault: false, userCount: 4, status: 'Active', description: 'Library catalog & circulation' },
-        { id: 'role-6', name: 'Driver', isDefault: false, userCount: 16, status: 'Active', description: 'Transport fleet driver' },
-        { id: 'role-7', name: 'Office Employee', isDefault: false, userCount: 9, status: 'Active', description: 'Administrative desk officer' },
-        { id: 'role-8', name: 'Accountant', isDefault: false, userCount: 6, status: 'Active', description: 'Accounts & billing desk' },
-        { id: 'role-9', name: 'Employee', isDefault: false, userCount: 22, status: 'Active', description: 'General campus staff' },
-        { id: 'role-10', name: 'Teacher', isDefault: false, userCount: 120, status: 'Active', description: 'Classroom instructor' },
-        { id: 'role-11', name: 'Sweeper', isDefault: false, userCount: 14, status: 'Active', description: 'Sanitation & housekeeping' },
-        { id: 'role-12', name: 'Staff', isDefault: false, userCount: 18, status: 'Active', description: 'Campus support & operations' },
-        { id: 'role-13', name: 'Employee 2', isDefault: false, userCount: 5, status: 'Active', description: 'Secondary operations staff' },
+        { id: 'role-3', name: 'Principal', isDefault: false, userCount: 1, status: 'Active', description: 'Head of Institution' }
+
       ],
 
       addUserRole: (name, description, status = 'Active') => {
@@ -832,7 +791,7 @@ export const useInstituteStore = create<InstituteStoreState>()(
         })),
     }),
     {
-      name: 'institute-management-storage',
+      name: 'institute-management-storage-v2',
       partialize: (state) => ({
         instituteDetails: state.instituteDetails,
         subInstitutes: state.subInstitutes,

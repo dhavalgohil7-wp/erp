@@ -211,7 +211,7 @@ export default function InstitutePage() {
             </div>
 
             {/* Quick Metrics */}
-            <div className="flex items-center gap-2 flex-wrap text-xs">
+            {/* <div className="flex items-center gap-2 flex-wrap text-xs">
               <div className="px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-center min-w-[90px]">
                 <div className="font-bold text-on-surface text-base">{subInstitutes.length}</div>
                 <div className="text-[11px] text-secondary font-medium">Sub Institutes</div>
@@ -224,7 +224,7 @@ export default function InstitutePage() {
                 <div className="font-bold text-primary text-base">{users.length}</div>
                 <div className="text-[11px] text-secondary font-medium">Enrolled Users</div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -232,7 +232,7 @@ export default function InstitutePage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-xl font-bold text-on-surface tracking-tight">
-              Institute Management Modules
+              Institute Management
             </h2>
             <p className="text-xs text-secondary mt-0.5">
               Click any module card below to open its dedicated configuration workspace.
@@ -370,7 +370,7 @@ export default function InstitutePage() {
                   <div className="erp-module-card group h-full">
                     <span className="badge-new">{m.badge}</span>
                     <div className="erp-module-icon-wrap">
-                      <Icon name={m.icon} className="erp-module-icon text-primary" />
+                      <Icon name={m.icon} className="erp-module-icon" />
                     </div>
                     <span className="erp-module-label">{m.label}</span>
                     <span className="text-[11px] text-secondary mt-1 font-normal opacity-75 line-clamp-1">

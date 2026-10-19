@@ -121,6 +121,7 @@ export default function MasterSetupSection() {
   const [newRoleDesc, setNewRoleDesc] = useState('')
   const [newRoleStatus, setNewRoleStatus] = useState<'Active' | 'Inactive'>('Active')
   const [roleError, setRoleError] = useState('')
+  const [roleToDelete, setRoleToDelete] = useState<UserRoleItem | null>(null)
 
   // Inline edit state for selected role
   const [isEditingRole, setIsEditingRole] = useState(false)
@@ -142,7 +143,18 @@ export default function MasterSetupSection() {
       roleCustomFields[key.replace(/s$/, '')] ||
       roleCustomFields['student'] ||
       []
-    setWorkingCustomFields(JSON.parse(JSON.stringify(fields)))
+    const defaultBlank: CustomFieldDef[] = [
+      {
+        id: `cf-${Date.now()}`,
+        title: '',
+        fieldType: 'Text',
+        required: false,
+        isUnique: false,
+        optionsString: '',
+      },
+    ]
+    const customList = fields && fields.length > 0 ? fields : defaultBlank
+    setWorkingCustomFields(JSON.parse(JSON.stringify(customList)))
   }, [activeLoadedRole, roleCustomFields])
 
   // Selected role object
@@ -221,12 +233,19 @@ export default function MasterSetupSection() {
 
   // Handle Delete Role
   const handleDeleteRole = (id: string) => {
+    const roleToRemove = userRoles.find((r) => r.id === id)
     const success = deleteUserRole(id)
     if (success) {
-      setSelectedRoleId(null)
+      if (selectedRoleId === id) {
+        setSelectedRoleId(null)
+        setIsEditingRole(false)
+      }
+      if (roleToRemove && activeLoadedRole.toLowerCase() === roleToRemove.name.toLowerCase()) {
+        setActiveLoadedRole('student')
+      }
       addToast({
         title: 'Role Deleted',
-        description: 'Custom role removed successfully.',
+        description: `Custom role "${roleToRemove?.name || ''}" removed successfully.`,
         type: 'info',
       })
     } else {
@@ -439,16 +458,14 @@ export default function MasterSetupSection() {
             setActiveTab('roles')
             setIsAddRoleOpen(false)
           }}
-          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${
-            activeTab === 'roles'
-              ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
-              : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
-          }`}
+          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${activeTab === 'roles'
+            ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
+            : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
+            }`}
         >
           <span
-            className={`text-sm font-bold ${
-              activeTab === 'roles' ? 'text-primary' : 'text-on-surface'
-            }`}
+            className={`text-sm font-bold ${activeTab === 'roles' ? 'text-primary' : 'text-on-surface'
+              }`}
           >
             1 » User Roles
           </span>
@@ -459,16 +476,14 @@ export default function MasterSetupSection() {
         <button
           type="button"
           onClick={() => setActiveTab('user-fields')}
-          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${
-            activeTab === 'user-fields'
-              ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
-              : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
-          }`}
+          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${activeTab === 'user-fields'
+            ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
+            : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
+            }`}
         >
           <span
-            className={`text-sm font-bold ${
-              activeTab === 'user-fields' ? 'text-primary' : 'text-on-surface'
-            }`}
+            className={`text-sm font-bold ${activeTab === 'user-fields' ? 'text-primary' : 'text-on-surface'
+              }`}
           >
             2 » User Fields
           </span>
@@ -479,16 +494,14 @@ export default function MasterSetupSection() {
         <button
           type="button"
           onClick={() => setActiveTab('master-fields')}
-          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${
-            activeTab === 'master-fields'
-              ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
-              : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
-          }`}
+          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${activeTab === 'master-fields'
+            ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
+            : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
+            }`}
         >
           <span
-            className={`text-sm font-bold ${
-              activeTab === 'master-fields' ? 'text-primary' : 'text-on-surface'
-            }`}
+            className={`text-sm font-bold ${activeTab === 'master-fields' ? 'text-primary' : 'text-on-surface'
+              }`}
           >
             3 » Master Fields
           </span>
@@ -499,16 +512,14 @@ export default function MasterSetupSection() {
         <button
           type="button"
           onClick={() => setActiveTab('field-selection')}
-          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${
-            activeTab === 'field-selection'
-              ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
-              : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
-          }`}
+          className={`px-5 py-3 text-left transition-all relative flex flex-col border-r border-surface-container whitespace-nowrap min-w-[170px] ${activeTab === 'field-selection'
+            ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
+            : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
+            }`}
         >
           <span
-            className={`text-sm font-bold ${
-              activeTab === 'field-selection' ? 'text-primary' : 'text-on-surface'
-            }`}
+            className={`text-sm font-bold ${activeTab === 'field-selection' ? 'text-primary' : 'text-on-surface'
+              }`}
           >
             4 » Field Selection
           </span>
@@ -519,33 +530,19 @@ export default function MasterSetupSection() {
         <button
           type="button"
           onClick={() => setActiveTab('settings')}
-          className={`px-5 py-3 text-left transition-all relative flex flex-col whitespace-nowrap min-w-[170px] ${
-            activeTab === 'settings'
-              ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
-              : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
-          }`}
+          className={`px-5 py-3 text-left transition-all relative flex flex-col whitespace-nowrap min-w-[170px] ${activeTab === 'settings'
+            ? 'bg-surface-container-lowest border-t-2 border-primary shadow-xs'
+            : 'hover:bg-surface-container-low/60 opacity-80 hover:opacity-100'
+            }`}
         >
           <span
-            className={`text-sm font-bold ${
-              activeTab === 'settings' ? 'text-primary' : 'text-on-surface'
-            }`}
+            className={`text-sm font-bold ${activeTab === 'settings' ? 'text-primary' : 'text-on-surface'
+              }`}
           >
             5 » Institute Settings
           </span>
           <span className="text-[11px] text-secondary mt-0.5">For Current Institute</span>
         </button>
-      </div>
-
-      {/* ─────────────────────────────────────────────────────────────
-          3. WARNING / NOTICE ALERT BANNER (Exact screenshot text)
-         ───────────────────────────────────────────────────────────── */}
-      <div className="p-3.5 border-b border-surface-container bg-surface-container-lowest">
-        <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded bg-blue-50/70 border border-blue-200 text-blue-950 text-xs">
-          <i className="fa-solid fa-triangle-exclamation text-slate-700 text-sm flex-shrink-0"></i>
-          <span className="font-semibold tracking-wide">
-            Once Role Is Created,It Can't Be Removed As You Can Make It Active/inactive.
-          </span>
-        </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
@@ -587,7 +584,8 @@ export default function MasterSetupSection() {
                   <thead>
                     <tr className="border-b border-surface-container text-secondary font-bold">
                       <th className="py-2 px-2.5">Role Name</th>
-                      <th className="py-2 px-2.5 text-right">Current Status</th>
+                      <th className="py-2 px-2 text-center">Current Status</th>
+                      <th className="py-2 px-2.5 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-surface-container">
@@ -603,20 +601,18 @@ export default function MasterSetupSection() {
                             setIsAddRoleOpen(false)
                             setIsEditingRole(false)
                           }}
-                          className={`cursor-pointer transition-colors group ${
-                            isSelected
-                              ? 'bg-primary/10 text-primary font-bold'
-                              : 'hover:bg-surface-container-low/60 text-on-surface'
-                          }`}
+                          className={`cursor-pointer transition-colors group ${isSelected
+                            ? 'bg-primary/10 text-primary font-bold'
+                            : 'hover:bg-surface-container-low/60 text-on-surface'
+                            }`}
                         >
                           <td className="py-2.5 px-2.5">
                             <div className="flex items-center gap-2">
                               <i
-                                className={`fa-solid fa-caret-right text-[10px] transition-transform ${
-                                  isSelected
-                                    ? 'text-primary translate-x-0.5'
-                                    : 'text-secondary/50 group-hover:text-primary'
-                                }`}
+                                className={`fa-solid fa-caret-right text-[10px] transition-transform ${isSelected
+                                  ? 'text-primary translate-x-0.5'
+                                  : 'text-secondary/50 group-hover:text-primary'
+                                  }`}
                               ></i>
                               <span className="text-xs font-semibold">{role.name}</span>
                               {role.isDefault && (
@@ -626,19 +622,40 @@ export default function MasterSetupSection() {
                               )}
                             </div>
                           </td>
-                          <td className="py-2.5 px-2.5 text-right">
+                          <td className="py-2.5 px-2 text-center">
                             <button
                               type="button"
                               onClick={(e) => handleToggleStatus(role, e)}
-                              className={`px-2 py-0.5 rounded text-[11px] font-bold border transition-all ${
-                                isActive
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
-                                  : 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200'
-                              }`}
+                              className={`px-2 py-0.5 rounded text-[11px] font-bold border transition-all ${isActive
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
+                                : 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200'
+                                }`}
                               title="Click to toggle status"
                             >
                               {isActive ? 'Active' : 'Inactive'}
                             </button>
+                          </td>
+                          <td className="py-2.5 px-2.5 text-right">
+                            {!role.isDefault ? (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setRoleToDelete(role)
+                                }}
+                                className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-secondary hover:text-red-600 hover:bg-red-50 transition-colors"
+                                title={`Delete role "${role.name}"`}
+                              >
+                                <i className="fa-regular fa-trash-can text-xs"></i>
+                              </button>
+                            ) : (
+                              <span
+                                className="inline-flex items-center justify-center w-7 h-7 text-secondary/30"
+                                title="Default core role cannot be deleted"
+                              >
+                                <i className="fa-solid fa-lock text-[11px]"></i>
+                              </span>
+                            )}
                           </td>
                         </tr>
                       )
@@ -772,11 +789,10 @@ export default function MasterSetupSection() {
                           <h4 className="text-sm font-bold text-on-surface flex items-center gap-2">
                             {selectedRole.name}
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
-                                selectedRole.status !== 'Inactive'
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                                  : 'bg-slate-100 text-slate-600 border-slate-300'
-                              }`}
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold border ${selectedRole.status !== 'Inactive'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                                : 'bg-slate-100 text-slate-600 border-slate-300'
+                                }`}
                             >
                               {selectedRole.status || 'Active'}
                             </span>
@@ -802,7 +818,7 @@ export default function MasterSetupSection() {
                       <div className="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/30">
                         <span className="text-[11px] text-secondary">Enrolled User Count</span>
                         <div className="text-base font-bold text-on-surface mt-0.5">
-                          {selectedRole.userCount || 0} Users
+                          {selectedRole.userCount || 0} {selectedRole.name}
                         </div>
                       </div>
                       <div className="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/30">
@@ -900,7 +916,7 @@ export default function MasterSetupSection() {
                       {!selectedRole.isDefault && (
                         <button
                           type="button"
-                          onClick={() => handleDeleteRole(selectedRole.id)}
+                          onClick={() => setRoleToDelete(selectedRole)}
                           className="px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold transition-colors ml-auto flex items-center gap-1.5"
                           title="Delete custom role"
                         >
@@ -1004,11 +1020,10 @@ export default function MasterSetupSection() {
               >
                 <div className="flex items-center gap-2">
                   <i
-                    className={`fa-solid fa-chevron-right text-[11px] transition-transform ${
-                      isDefaultAccordionOpen ? 'rotate-90 text-primary' : 'text-secondary'
-                    }`}
+                    className={`fa-solid fa-chevron-right text-[11px] transition-transform ${isDefaultAccordionOpen ? 'rotate-90 text-primary' : 'text-secondary'
+                      }`}
                   ></i>
-                  <span>Accordion 1 — Default Fields (Predefined • Read-Only)</span>
+                  <span>Default Fields (Predefined • Read-Only)</span>
                 </div>
                 <span className="text-[11px] font-semibold text-secondary">
                   {defaultFields.length} Predefined System Fields
@@ -1066,11 +1081,10 @@ export default function MasterSetupSection() {
               >
                 <div className="flex items-center gap-2">
                   <i
-                    className={`fa-solid fa-chevron-right text-[11px] transition-transform ${
-                      isCustomAccordionOpen ? 'rotate-90 text-primary' : 'text-secondary'
-                    }`}
+                    className={`fa-solid fa-chevron-right text-[11px] transition-transform ${isCustomAccordionOpen ? 'rotate-90 text-primary' : 'text-secondary'
+                      }`}
                   ></i>
-                  <span>Accordion 2 — Custom Fields (Dynamic Form Schema Builder)</span>
+                  <span>Custom Fields (Dynamic Form Schema Builder)</span>
                 </div>
                 <span className="text-[11px] font-semibold text-primary">
                   {workingCustomFields.length} Dynamic Fields
@@ -1122,7 +1136,7 @@ export default function MasterSetupSection() {
                               <td className="py-2 px-3">
                                 <input
                                   type="text"
-                                  value={field.title}
+                                  value={field.title || ''}
                                   onChange={(e) => handleFieldChange(index, 'title', e.target.value)}
                                   placeholder="e.g. Blood Group"
                                   className="w-full px-2.5 py-1.5 rounded bg-surface-container-low border border-outline-variant/30 text-xs text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
@@ -1131,7 +1145,7 @@ export default function MasterSetupSection() {
                               </td>
                               <td className="py-2 px-3">
                                 <select
-                                  value={field.fieldType}
+                                  value={field.fieldType || 'Text'}
                                   onChange={(e) =>
                                     handleFieldChange(index, 'fieldType', e.target.value as CustomFieldType)
                                   }
@@ -1152,11 +1166,10 @@ export default function MasterSetupSection() {
                                 <button
                                   type="button"
                                   onClick={() => handleFieldChange(index, 'required', !field.required)}
-                                  className={`px-2.5 py-1 rounded text-[11px] font-bold border transition-colors ${
-                                    field.required
-                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                                      : 'bg-slate-100 text-slate-500 border-slate-300'
-                                  }`}
+                                  className={`px-2.5 py-1 rounded text-[11px] font-bold border transition-colors ${field.required
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                                    : 'bg-slate-100 text-slate-500 border-slate-300'
+                                    }`}
                                 >
                                   {field.required ? 'Yes' : 'No'}
                                 </button>
@@ -1165,11 +1178,10 @@ export default function MasterSetupSection() {
                                 <button
                                   type="button"
                                   onClick={() => handleFieldChange(index, 'isUnique', !field.isUnique)}
-                                  className={`px-2.5 py-1 rounded text-[11px] font-bold border transition-colors ${
-                                    field.isUnique
-                                      ? 'bg-purple-50 text-purple-700 border-purple-300'
-                                      : 'bg-slate-100 text-slate-500 border-slate-300'
-                                  }`}
+                                  className={`px-2.5 py-1 rounded text-[11px] font-bold border transition-colors ${field.isUnique
+                                    ? 'bg-purple-50 text-purple-700 border-purple-300'
+                                    : 'bg-slate-100 text-slate-500 border-slate-300'
+                                    }`}
                                 >
                                   {field.isUnique ? 'Yes' : 'No'}
                                 </button>
@@ -1353,7 +1365,7 @@ export default function MasterSetupSection() {
                       <input
                         type="checkbox"
                         checked={isGeneralAllChecked}
-                        onChange={() => {}} // handled by container onClick
+                        onChange={() => { }} // handled by container onClick
                         className="w-4 h-4 rounded text-primary border-outline-variant/60 focus:ring-primary/20 cursor-pointer"
                       />
                       <span className="font-bold text-on-surface text-xs sm:text-[13px]">
@@ -1390,7 +1402,7 @@ export default function MasterSetupSection() {
                       <input
                         type="checkbox"
                         checked={isBankAllChecked}
-                        onChange={() => {}} // handled by container onClick
+                        onChange={() => { }} // handled by container onClick
                         className="w-4 h-4 rounded text-primary border-outline-variant/60 focus:ring-primary/20 cursor-pointer"
                       />
                       <span className="font-bold text-on-surface text-xs sm:text-[13px]">
@@ -1436,7 +1448,7 @@ export default function MasterSetupSection() {
                     <input
                       type="checkbox"
                       checked={isParentAllChecked}
-                      onChange={() => {}} // handled by container onClick
+                      onChange={() => { }} // handled by container onClick
                       className="w-4 h-4 rounded text-primary border-outline-variant/60 focus:ring-primary/20 cursor-pointer"
                     />
                     <span className="font-bold text-on-surface text-xs sm:text-[13px]">
@@ -1489,7 +1501,7 @@ export default function MasterSetupSection() {
                     <input
                       type="checkbox"
                       checked={isHistoryAllChecked}
-                      onChange={() => {}} // handled by container onClick
+                      onChange={() => { }} // handled by container onClick
                       className="w-4 h-4 rounded text-primary border-outline-variant/60 focus:ring-primary/20 cursor-pointer"
                     />
                     <span className="font-bold text-on-surface text-xs sm:text-[13px]">
@@ -1638,6 +1650,41 @@ export default function MasterSetupSection() {
                   </label>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Role Delete Confirmation Modal */}
+      {roleToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-6 shadow-xl border border-outline-variant/30 text-center animate-scale-in">
+            <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-3 text-lg">
+              <i className="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 className="text-sm font-bold text-on-surface mb-1.5">Delete Role?</h3>
+            <p className="text-xs text-secondary mb-5">
+              Are you sure you want to remove role{' '}
+              <span className="font-semibold text-on-surface">"{roleToDelete.name}"</span>? Any custom configurations for this role will be removed.
+            </p>
+            <div className="flex justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => setRoleToDelete(null)}
+                className="btn-ghost text-xs px-4 py-2 font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleDeleteRole(roleToDelete.id)
+                  setRoleToDelete(null)
+                }}
+                className="px-4 py-2 rounded-lg text-xs font-bold bg-red-600 hover:bg-red-700 text-white transition-colors shadow-xs"
+              >
+                Delete Role
+              </button>
             </div>
           </div>
         </div>

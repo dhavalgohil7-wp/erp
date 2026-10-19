@@ -232,7 +232,7 @@ export default function InstituteDetailsForm() {
             <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-[15px]">
               <i className="fa-solid fa-school"></i>
             </span>
-            1.1 Institute Details
+            Basic Details
           </h2>
           <p className="text-body-sm text-on-surface-variant mt-0.5">
             Primary organizational identity, official contacts, and validated branding graphics.
@@ -255,9 +255,8 @@ export default function InstituteDetailsForm() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g. St. Xavier International Academy"
-              className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${
-                formErrors.name ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-outline-variant/30 focus:border-primary'
-              } outline-none transition-all`}
+              className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${formErrors.name ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-outline-variant/30 focus:border-primary'
+                } outline-none transition-all`}
             />
             {formErrors.name && <p className="text-red-500 text-[12px] mt-1">{formErrors.name}</p>}
           </div>
@@ -289,9 +288,8 @@ export default function InstituteDetailsForm() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="info@institute.edu.in"
-                className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${
-                  formErrors.email ? 'border-red-500' : 'border-outline-variant/30 focus:border-primary'
-                } outline-none transition-all`}
+                className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${formErrors.email ? 'border-red-500' : 'border-outline-variant/30 focus:border-primary'
+                  } outline-none transition-all`}
               />
             </div>
             {formErrors.email && <p className="text-red-500 text-[12px] mt-1">{formErrors.email}</p>}
@@ -308,9 +306,8 @@ export default function InstituteDetailsForm() {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="+91 79 2840 9100"
-                className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${
-                  formErrors.phone ? 'border-red-500' : 'border-outline-variant/30 focus:border-primary'
-                } outline-none transition-all`}
+                className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${formErrors.phone ? 'border-red-500' : 'border-outline-variant/30 focus:border-primary'
+                  } outline-none transition-all`}
               />
             </div>
             {formErrors.phone && <p className="text-red-500 text-[12px] mt-1">{formErrors.phone}</p>}
@@ -327,9 +324,8 @@ export default function InstituteDetailsForm() {
             value={formData.address}
             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
             placeholder="Complete street address, district, state and postal code..."
-            className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${
-              formErrors.address ? 'border-red-500' : 'border-outline-variant/30 focus:border-primary'
-            } outline-none transition-all resize-none`}
+            className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low text-on-surface text-[14px] border ${formErrors.address ? 'border-red-500' : 'border-outline-variant/30 focus:border-primary'
+              } outline-none transition-all resize-none`}
           />
           {formErrors.address && <p className="text-red-500 text-[12px] mt-1">{formErrors.address}</p>}
         </div>

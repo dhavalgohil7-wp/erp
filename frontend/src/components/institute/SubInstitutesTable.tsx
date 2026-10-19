@@ -125,7 +125,7 @@ export default function SubInstitutesTable() {
             <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-[15px]">
               <i className="fa-solid fa-network-wired"></i>
             </span>
-            1.2 My Sub Institute
+            My Sub Institute
           </h2>
           <p className="text-body-sm text-on-surface-variant mt-0.5">
             Manage subsidiary branches, satellite campuses, and affiliated institutes.
@@ -161,11 +161,10 @@ export default function SubInstitutesTable() {
               key={status}
               type="button"
               onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                statusFilter === status
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${statusFilter === status
                   ? 'bg-surface-container-lowest text-primary shadow-xs'
                   : 'text-secondary hover:text-on-surface'
-              }`}
+                }`}
             >
               {status} {status === 'All' && `(${subInstitutes.length})`}
             </button>
@@ -214,23 +213,20 @@ export default function SubInstitutesTable() {
                         toggleSubInstituteStatus(sub.id)
                         addToast({
                           title: 'Status Updated',
-                          description: `${sub.name} marked as ${
-                            sub.status === 'Active' ? 'Inactive' : 'Active'
-                          }`,
+                          description: `${sub.name} marked as ${sub.status === 'Active' ? 'Inactive' : 'Active'
+                            }`,
                           type: 'info',
                         })
                       }}
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-bold transition-all cursor-pointer ${
-                        sub.status === 'Active'
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-bold transition-all cursor-pointer ${sub.status === 'Active'
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-300 hover:bg-emerald-100'
                           : 'bg-slate-100 text-slate-600 border border-slate-300 hover:bg-slate-200'
-                      }`}
+                        }`}
                       title="Click to toggle status"
                     >
                       <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          sub.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'
-                        }`}
+                        className={`w-1.5 h-1.5 rounded-full ${sub.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'
+                          }`}
                       />
                       {sub.status}
                     </button>
